@@ -1,51 +1,19 @@
 import React from 'react';
-import { View, StyleSheet, Platform } from 'react-native';
+import { View, StyleSheet, Platform, AsyncStorage } from 'react-native';
 import { FontAwesome, MaterialIcons, MaterialCommunityIcons } from 'react-native-vector-icons';
-import { white, red, orange, blue, lightPurp, pink, gray } from './colors';
+import { white, red, orange, blue, lightPurp, pink } from './colors';
+import { Notifications, Permissions } from 'expo';
 
-// Determine whether num is between x and y
-export const isBetween = (num, x, y) => num >= x && num <= y;
+// AsyncStorage key for local notifications
+const NOTIFICATION_KEY = 'vrrajkum-flashcards:notifications';
 
-// Given a heading, return a cardinal direction
-export const calculateDirection = (heading) => {
-  let direction = '';
-
-  const headingSwitch = {
-    1: 'North',
-    2: 'Northeast',
-    3: 'East',
-    4: 'Southeast',
-    5: 'South',
-    6: 'Southwest',
-    7: 'West',
-    8: 'Northwest',
-    default: 'Calculating'
-  };
-
-  if (isBetween(heading, 0, 22.5)) {
-    direction = 'North';
-  } else if (isBetween(heading, 22.5, 67.5)) {
-    direction = 'North East';
-  } else if (isBetween(heading, 67.5, 112.5)) {
-    direction = 'East';
-  } else if (isBetween(heading, 112.5, 157.5)) {
-    direction = 'South East';
-  } else if (isBetween(heading, 157.5, 202.5)) {
-    direction = 'South';
-  } else if (isBetween(heading, 202.5, 247.5)) {
-    direction = 'South West';
-  } else if (isBetween(heading, 247.5, 292.5)) {
-    direction = 'West';
-  } else if (isBetween(heading, 292.5, 337.5)) {
-    direction = 'North West';
-  } else if (isBetween(heading, 337.5, 360)) {
-    direction = 'North';
-  } else {
-    direction = 'Calculating';
+// Given a deck name, create a deck object for saving to AsyncStorage
+export const createNewDeck = (deckName) => ({
+  [deckName]: {
+    title: deckName,
+    questions: []
   }
-
-  return direction;
-};
+});
 
 // Convert the current time to a string
 export const timeToString = (time = Date.now()) => {
@@ -66,95 +34,53 @@ const styles = StyleSheet.create({
   },
 });
 
-// Retrieve metadata for a given metric
-export const getMetricMetaInfo = (metric) => {
-  const info = {
-    run: {
-      displayName: 'Run',
-      max: 50,
-      unit: 'miles',
-      step: 1,
-      type: 'steppers',
-      getIcon: () => (
-        <View style={[styles.iconContainer, { backgroundColor: red }]}>
-          <MaterialIcons
-            name="directions-run"
-            color={white}
-            size={35}
-          />
-        </View>
-      )
-    },
-    bike: {
-      displayName: 'Bike',
-      max: 100,
-      unit: 'miles',
-      step: 1,
-      type: 'steppers',
-      getIcon: () => (
-        <View style={[styles.iconContainer, { backgroundColor: orange }]}>
-          <MaterialCommunityIcons
-            name="bike"
-            color={white}
-            size={35}
-          />
-        </View>
-      )
-    },
-    swim: {
-      displayName: 'Swim',
-      max: 9900,
-      unit: 'meters',
-      step: 100,
-      type: 'steppers',
-      getIcon: () => (
-        <View style={[styles.iconContainer, { backgroundColor: blue }]}>
-          <MaterialCommunityIcons
-            name="swim"
-            color={white}
-            size={35}
-          />
-        </View>
-      )
-    },
-    sleep: {
-      displayName: 'Sleep',
-      max: 24,
-      unit: 'hours',
-      step: 1,
-      type: 'slider',
-      getIcon: () => (
-        <View style={[styles.iconContainer, { backgroundColor: lightPurp }]}>
-          <FontAwesome
-            name="bed"
-            color={white}
-            size={35}
-          />
-        </View>
-      )
-    },
-    eat: {
-      displayName: 'Eat',
-      max: 10,
-      unit: 'rating',
-      step: 1,
-      type: 'slider',
-      getIcon: () => (
-        <View style={[styles.iconContainer, { backgroundColor: pink }]}>
-          <MaterialCommunityIcons
-            name="food"
-            color={white}
-            size={35}
-          />
-        </View>
-      )
-    }
-  };
-
-  return typeof metric === 'undefined' ? info : info[metric];
+// Clear notifications
+export const clearLocalNotifications = async () => {
+  await AsyncStorage.removeItem(NOTIFICATION_KEY);
+  Notifications.cancelAllScheduledNotificationsAsync();
 };
 
-// If no data has been logged today, return a reminder
-export const getDailyReminderValue = () => ({
-  today: "Don't forget to log your data today!"
+// Define the notification to be sent
+const createNotification = () => ({
+  title: 'Log your stats!',
+  body: `Don't forget to log your stats for today!`,
+  ios: {
+    sound: true
+  },
+  android: {
+    sound: true,
+    priority: 'high',
+    sticky: false,
+    vibrate: true
+  }
 });
+
+// Set notification in AsyncStorage
+export const setLocalNotification = async () => {
+  // Check if notification has already been set
+  const rawData = await AsyncStorage.getItem(NOTIFICATION_KEY);
+  const jsonData = JSON.parse(rawData);
+
+  if (jsonData === null) {
+    const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+
+    if (status === 'granted') {
+      Notifications.cancelAllScheduledNotificationsAsync(); // Prevent duplicate notifications
+      let tomorrow = new Date();
+
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(20);
+      tomorrow.setMinutes(0);
+      // Set time and frequency of notification
+      Notifications.scheduleLocalNotificationAsync(
+        createNotification(),
+        {
+          time: tomorrow,
+          repeat: 'day'
+        }
+      );
+      
+      AsyncStorage.setItem(NOTIFICATION_KEY, JSON.stringify(true));
+    }
+  }
+};

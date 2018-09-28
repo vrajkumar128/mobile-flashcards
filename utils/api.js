@@ -1,35 +1,33 @@
 import { AsyncStorage } from 'react-native';
-import { CALENDAR_STORAGE_KEY, formatCalendarResults } from './_calendar';
+import { createNewDeck } from './helpers';
+import { baseDecks } from './_DATA';
 
-// Retrieve calendar data
-export const fetchCalendarResults = async () => {
-  try {
-    const results = await AsyncStorage.getItem(CALENDAR_STORAGE_KEY);
-    return formatCalendarResults(results);
-  } catch (err) {
-    console.error("Error:", err);
-    alert('There was an error fetching the calendar entries.');
-  }
-};
+// AsyncStorage key for decks
+const DECKS_STORAGE_KEY = 'vrrajkum-flashcards:decks';
 
-// Add a new entry to the calendar
-export const submitEntry = async ({ entry, key }) => {
+// Retrieve decks from AsyncStorage
+export const getDecks = async () => {
   try {
-    await AsyncStorage.mergeItem(CALENDAR_STORAGE_KEY, JSON.stringify({
-      [key]: entry
-    }));
-  } catch (err) {
-    console.error("Error:", err);
-    alert('There was an error with your submission. Please try again.');
-  }
-};
+    const decks = await AsyncStorage.getItem(DECKS_STORAGE_KEY);
+    if (!decks) {
+      await AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(baseDecks));
+      return baseDecks;
+    }
 
-// Reset today's calendar entry
-export const removeEntry = async (key) => {
-  try {
-    await AsyncStorage.removeItem(CALENDAR_STORAGE_KEY);
+    return JSON.parse(decks);
   } catch (err) {
-    console.error("Error:", err);
-    alert('There was an error resetting the data. Please try again.');
+    console.error(err);
+    alert('Error retrieving deck list');
   }
-};
+}
+
+// Save a new deck to AsyncStorage
+export const saveDeck = async (deckName) => {
+  try {
+    const newDeck = createNewDeck(deckName);
+    await AsyncStorage.mergeItem(DECKS_STORAGE_KEY, JSON.stringify(newDeck));
+  } catch (err) {
+    console.error(err);
+    alert('There was an error saving the deck. Please try again.');
+  }
+}
