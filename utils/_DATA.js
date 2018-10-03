@@ -1,4 +1,4 @@
-// Base decks
+// Baseline decks
 export const baseDecks = {
   React: {
     title: 'React',

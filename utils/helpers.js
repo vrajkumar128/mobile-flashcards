@@ -1,7 +1,4 @@
-import React from 'react';
-import { View, StyleSheet, Platform, AsyncStorage } from 'react-native';
-import { FontAwesome, MaterialIcons, MaterialCommunityIcons } from 'react-native-vector-icons';
-import { white, red, orange, blue, lightPurp, pink } from './colors';
+import { AsyncStorage } from 'react-native';
 import { Notifications, Permissions } from 'expo';
 
 // AsyncStorage key for local notifications
@@ -13,25 +10,6 @@ export const createNewDeck = (deckName) => ({
     title: deckName,
     questions: []
   }
-});
-
-// Convert the current time to a string
-export const timeToString = (time = Date.now()) => {
-  const date = new Date(time);
-  const todayUTC = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  return todayUTC.toISOString().split('T')[0];
-};
-
-const styles = StyleSheet.create({
-  iconContainer: {
-    padding: 5,
-    borderRadius: Platform.OS === 'ios' ? 16 : 2,
-    width: 50,
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 20
-  },
 });
 
 // Clear notifications

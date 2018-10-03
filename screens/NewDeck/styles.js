@@ -7,7 +7,8 @@ const styles = {
   },
 
   inputField: {
-    width: '50%'
+    width: '50%',
+    fontSize: 16
   },
 
   submitBtn: {

@@ -6,7 +6,7 @@ import StackNavigator from './navigators/StackNavigator';
 
 export default class App extends Component {
   componentDidMount() {
-    setLocalNotification;
+    setLocalNotification();
   }
 
   render() {

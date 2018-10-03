@@ -1,31 +1,41 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { FlatList } from 'react-native';
 import { getDecks } from '../../utils/api';
-import styles from './styles';
+import Deck from '../../components/Deck/Deck';
 
-// List deck names and # of cards in each deck
 class DeckList extends React.PureComponent {
   state = {
     decks: null
   }
 
+  // Retrieve the list of decks
   async componentDidMount() {
     const decks = await getDecks();
     this.setState({ decks });
   }
 
+  // Reload the component upon a change in decks
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState !== this.state) {
+      this.componentDidMount();
+    }
+  }
+
+  // Pull up details for an individual deck when that deck is pressed
+  handlePress = (deck) => {
+
+  }
+
   render() {
     const { decks } = this.state;
+    const deckArray = decks && Object.keys(decks).map(deckName => decks[deckName]); // Format decks for <FlatList /> component
 
     return (
-      decks && Object.keys(decks).map(deckName => (
-        <TouchableOpacity key={deckName} style={styles.container}>
-          <View className="contents" style={styles.contents}>
-            <Text style={{ fontSize: 20 }}>{deckName}</Text>
-            <Text>{decks[deckName].questions.length} cards</Text>
-          </View>
-        </TouchableOpacity>
-      ))
+      <FlatList
+        data={deckArray}
+        renderItem={({ item }) => <Deck deck={item} />}
+        keyExtractor={item => item.title}
+      />
     );
   }
 }
