@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
   },
 
   inputField: {
-    width: '50%',
+    width: '75%',
     fontSize: 16
   },
 

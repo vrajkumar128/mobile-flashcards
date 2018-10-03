@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, Text } from 'react-native';
 import { getDecks } from '../../utils/api';
 import Deck from '../../components/Deck/Deck';
 
@@ -29,15 +29,20 @@ class DeckList extends React.PureComponent {
 
   render() {
     const { decks } = this.state;
-    const deckArray = decks && Object.keys(decks).map(deckName => decks[deckName]); // Format decks for <FlatList /> component
 
-    return (
-      <FlatList
-        data={deckArray}
-        renderItem={({ item }) => <Deck deck={item} handlePress={this.handlePress} />}
-        keyExtractor={item => item.title}
-      />
-    );
+    if (decks) {
+      const deckArray = Object.keys(decks).map(deckName => decks[deckName]); // Format decks for <FlatList /> component
+
+      return (
+        <FlatList
+          data={deckArray}
+          renderItem={({ item }) => <Deck deck={item} onPress={() => this.handlePress(item)} />}
+          keyExtractor={item => item.title}
+        />
+      );
+    }
+
+    return <Text>Loading...</Text>
   }
 }
 

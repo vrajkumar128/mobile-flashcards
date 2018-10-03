@@ -4,10 +4,10 @@ import { determineCardPlurality } from '../../utils/helpers';
 import styles from './styles';
 
 // List deck names and # of cards in a given deck
-const Deck = ({ deck, handlePress }) => (
+const Deck = ({ deck, ...rest }) => (
   <TouchableOpacity 
-    key={deck.title} 
-    onPress={() => handlePress(deck)} 
+    key={deck.title}
+    {...rest}
     style={styles.container}
   >
     <View className="contents" style={styles.contents}>

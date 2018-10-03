@@ -4,12 +4,18 @@ import { Notifications, Permissions } from 'expo';
 // AsyncStorage key for local notifications
 const NOTIFICATION_KEY = 'vrrajkum-flashcards:notifications';
 
-// Given a deck name, create a deck object for saving to AsyncStorage
-export const createNewDeck = (deckName) => ({
+// Given a deck name, return a deck object for saving to AsyncStorage
+export const formatNewDeck = (deckName) => ({
   [deckName]: {
     title: deckName,
     questions: []
   }
+});
+
+// Given a question and answer, return a question object for pushing into a deck
+export const formatNewQuestion = (question, answer) => ({
+  question,
+  answer
 });
 
 // Determine the plurality of the word "card"

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, TextInput } from 'react-native';
+import { KeyboardAvoidingView, TextInput } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
 import styles from './styles';
 import { saveDeck } from '../../utils/api';
@@ -18,6 +18,7 @@ class NewDeck extends PureComponent {
     this.setState({ text: '' });
     const resetAction = StackActions.reset({
       index: 1,
+      key: null,
       actions: [
         NavigationActions.navigate({ routeName: 'Home' }),
         NavigationActions.navigate({ routeName: 'DeckDetail', params: { deck: newDeck }})
@@ -26,27 +27,19 @@ class NewDeck extends PureComponent {
     this.props.navigation.dispatch(resetAction);
   }
 
-  // Trigger submit when user presses Enter
-  handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      this.handleSubmit();
-    }
-  }
-
   render() {
     const { text } = this.state;
 
     return (
-      <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
         <TextInput 
           placeholder="Deck title" 
           value={text} 
           onChangeText={text => this.setState({ text })}
-          onKeyPress={this.handleKeyPress}
           style={styles.inputField}
         />
-        <TextButton text="Create Deck" onPress={this.handleSubmit} />
-      </View>
+        <TextButton disabled={!text} text="Create Deck" onPress={this.handleSubmit} />
+      </KeyboardAvoidingView>
     );
   }
 }
