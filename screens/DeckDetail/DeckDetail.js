@@ -27,10 +27,22 @@ class DeckDetail extends React.PureComponent {
   }
 
   // Reload the component upon a change in questions
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, prevState) {
     if (prevState !== this.state) {
-      this.componentDidMount();
+      const { title } = this.props.navigation.state.params.deck;
+      const deck = await getDeck(title);
+      this.setState({ deck });
     }
+  }
+
+  // Begin a quiz
+  runQuiz = () => {
+    const { deck } = this.props.navigation.state.params;
+    this.props.navigation.navigate('Quiz', {
+      deck,
+      questionIndex: 0,
+      numCorrect: 0
+    });
   }
 
   render() {
@@ -49,15 +61,15 @@ class DeckDetail extends React.PureComponent {
               onPress={() => this.props.navigation.navigate('NewQuestion', { deck })} 
             />
             <TextButton 
-              text="Start Quiz" 
-              onPress={() => this.props.navigation.navigate('Quiz', { deck })} 
+              text="Start a Quiz" 
+              onPress={this.runQuiz} 
             />
           </View>
         </View>
       );
     }
 
-    return <Text>Loading...</Text>;
+    return null;
     
   }
 }

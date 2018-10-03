@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, Text } from 'react-native';
+import { FlatList } from 'react-native';
 import { getDecks } from '../../utils/api';
 import Deck from '../../components/Deck/Deck';
 
@@ -15,9 +15,10 @@ class DeckList extends React.PureComponent {
   }
 
   // Reload the component upon a change in decks
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, prevState) {
     if (prevState !== this.state) {
-      this.componentDidMount();
+      const decks = await getDecks();
+      this.setState({ decks });
     }
   }
 
@@ -42,7 +43,7 @@ class DeckList extends React.PureComponent {
       );
     }
 
-    return <Text>Loading...</Text>
+    return null;
   }
 }
 

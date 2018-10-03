@@ -16,15 +16,7 @@ class NewDeck extends PureComponent {
     const savedDeck = await saveDeck(text);
     const newDeck = savedDeck[text];
     this.setState({ text: '' });
-    const resetAction = StackActions.reset({
-      index: 1,
-      key: null,
-      actions: [
-        NavigationActions.navigate({ routeName: 'Home' }),
-        NavigationActions.navigate({ routeName: 'DeckDetail', params: { deck: newDeck }})
-      ]
-    });
-    this.props.navigation.dispatch(resetAction);
+    this.props.navigation.navigate('DeckDetail', { deck: newDeck });
   }
 
   render() {

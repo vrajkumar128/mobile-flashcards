@@ -51,7 +51,6 @@ export const saveQuestion = async (deckName, questionText, answerText) => {
     const newQuestion = formatNewQuestion(questionText, answerText);
     decks[deckName].questions.push(newQuestion);
     await AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(decks));
-    console.log(decks[deckName]);
     return decks[deckName];
   } catch (err) {
     console.error(err);
