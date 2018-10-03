@@ -21,9 +21,10 @@ class DeckList extends React.PureComponent {
     }
   }
 
-  // Pull up details for an individual deck when that deck is pressed
+  // Display details for an individual deck when that deck is pressed
   handlePress = (deck) => {
-
+    const { navigation } = this.props;
+    navigation.navigate('DeckDetail', { deck });
   }
 
   render() {
@@ -33,7 +34,7 @@ class DeckList extends React.PureComponent {
     return (
       <FlatList
         data={deckArray}
-        renderItem={({ item }) => <Deck deck={item} />}
+        renderItem={({ item }) => <Deck deck={item} handlePress={this.handlePress} />}
         keyExtractor={item => item.title}
       />
     );

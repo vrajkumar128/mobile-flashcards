@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
-import { View, TextInput, 
-  TouchableOpacity, Text } from 'react-native';
+import { View, TextInput } from 'react-native';
+import { StackActions, NavigationActions } from 'react-navigation';
 import styles from './styles';
 import { saveDeck } from '../../utils/api';
+import TextButton from '../../components/TextButton/TextButton';
 
 class NewDeck extends PureComponent {
   state = { 
@@ -10,11 +11,19 @@ class NewDeck extends PureComponent {
   }
 
   // Create a new deck, clear the input field, and redirect to Home
-  handleSubmit = () => {
+  handleSubmit = async () => {
     const { text } = this.state;
-    saveDeck(text);
+    const savedDeck = await saveDeck(text);
+    const newDeck = savedDeck[text];
     this.setState({ text: '' });
-    this.props.navigation.navigate('Decks');
+    const resetAction = StackActions.reset({
+      index: 1,
+      actions: [
+        NavigationActions.navigate({ routeName: 'Home' }),
+        NavigationActions.navigate({ routeName: 'DeckDetail', params: { deck: newDeck }})
+      ]
+    });
+    this.props.navigation.dispatch(resetAction);
   }
 
   // Trigger submit when user presses Enter
@@ -36,9 +45,7 @@ class NewDeck extends PureComponent {
           onKeyPress={this.handleKeyPress}
           style={styles.inputField}
         />
-        <TouchableOpacity onPress={this.handleSubmit} style={styles.submitBtn}>
-          <Text>Create Deck</Text>
-        </TouchableOpacity>
+        <TextButton text="Create Deck" onPress={this.handleSubmit} />
       </View>
     );
   }

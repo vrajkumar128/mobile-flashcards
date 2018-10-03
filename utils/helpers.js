@@ -12,6 +12,13 @@ export const createNewDeck = (deckName) => ({
   }
 });
 
+// Determine the plurality of the word "card"
+export const determineCardPlurality = (deck) => (
+  deck.questions.length === 1
+    ? "card"
+    : "cards"
+);
+
 // Clear notifications
 export const clearLocalNotifications = async () => {
   await AsyncStorage.removeItem(NOTIFICATION_KEY);

@@ -1,4 +1,6 @@
-const styles = {
+import { StyleSheet } from 'react-native';
+
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 50,
@@ -19,6 +21,6 @@ const styles = {
     alignItems: 'center',
     width: '50%'
   }
-}
+});
 
 export default styles;

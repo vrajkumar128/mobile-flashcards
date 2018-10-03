@@ -10,8 +10,8 @@ export const getDecks = async () => {
   try {
     const decks = await AsyncStorage.getItem(DECKS_STORAGE_KEY);
     if (!decks) {
-      await AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(baseDecks));
-      return baseDecks;
+      const initialDecks = await AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(baseDecks));
+      return initialDecks;
     }
 
     return JSON.parse(decks);
@@ -26,6 +26,7 @@ export const saveDeck = async (deckName) => {
   try {
     const newDeck = createNewDeck(deckName);
     await AsyncStorage.mergeItem(DECKS_STORAGE_KEY, JSON.stringify(newDeck));
+    return newDeck;
   } catch (err) {
     console.error(err);
     alert('There was an error saving the deck. Please try again.');

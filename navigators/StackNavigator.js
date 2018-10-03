@@ -1,6 +1,7 @@
-import React from 'react';
 import { createStackNavigator } from 'react-navigation';
 import TabNavigator from './TabNavigator';
+import DeckDetail from '../screens/DeckDetail/DeckDetail';
+import { black, white } from '../utils/colors';
 
 // Create stack navigator
 const StackNavigator = createStackNavigator({
@@ -10,15 +11,15 @@ const StackNavigator = createStackNavigator({
       header: null
     }
   },
-  // EntryDetail: {
-  //   screen: EntryDetail,
-  //   navigationOptions: {
-  //     headerTintColor: white,
-  //     headerStyle: {
-  //       backgroundColor: purple
-  //     }
-  //   }
-  // }
+  DeckDetail: {
+    screen: DeckDetail,
+    navigationOptions: {
+      headerTintColor: white,
+      headerStyle: {
+        backgroundColor: black,
+      }
+    }
+  }
 });
 
 export default StackNavigator;

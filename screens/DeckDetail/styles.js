@@ -3,18 +3,23 @@ import { gray } from '../../utils/colors';
 
 const styles = StyleSheet.create({
   container: {
-    width: '85%',
+    flex: 1,
     alignItems: 'center',
-    backgroundColor: gray,
-    marginLeft: 20,
-    marginRight: 20,
-    marginTop: 20
+    justifyContent: 'space-around'
   },
 
-  contents: {
+  subcontainer: {
     alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 10
+    width: '100%'
+  },
+
+  heading: {
+    fontSize: 48
+  },
+
+  caption: {
+    fontSize: 24,
+    color: gray
   }
 });
 
