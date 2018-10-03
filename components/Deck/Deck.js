@@ -4,7 +4,7 @@ import { determineCardPlurality } from '../../utils/helpers';
 import styles from './styles';
 
 // List deck names and # of cards in a given deck
-const Deck = ({ deck, bounceValue, ...rest }) => (
+const Deck = ({ deck, ...rest }) => (
   <TouchableOpacity
     key={deck.title}
     {...rest}

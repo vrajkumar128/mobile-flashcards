@@ -8,17 +8,21 @@ class DeckList extends React.PureComponent {
     decks: null
   }
 
-  // Retrieve the list of decks
-  async componentDidMount() {
+  // Refresh the list of decks
+  refreshDecks = async () => {
     const decks = await getDecks();
     this.setState({ decks });
   }
 
-  // Reload the component upon a change in decks
-  async componentDidUpdate(prevProps, prevState) {
+  // Initialize the deck list
+  componentDidMount() {
+    this.refreshDecks();
+  }
+
+  // Reload the deck list upon adding a deck
+  componentDidUpdate(prevProps, prevState) {
     if (prevState !== this.state) {
-      const decks = await getDecks();
-      this.setState({ decks });
+      this.refreshDecks();
     }
   }
 

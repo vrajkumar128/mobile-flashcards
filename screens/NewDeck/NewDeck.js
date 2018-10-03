@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import { KeyboardAvoidingView, TextInput } from 'react-native';
-import { StackActions, NavigationActions } from 'react-navigation';
 import styles from './styles';
 import { saveDeck } from '../../utils/api';
 import TextButton from '../../components/TextButton/TextButton';

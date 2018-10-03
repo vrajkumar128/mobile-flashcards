@@ -23,9 +23,9 @@ class NewDeck extends PureComponent {
   handleSubmit = async () => {
     const { questionText, answerText } = this.state;
     const { deck } = this.props.navigation.state.params;
-    await saveQuestion(deck.title, questionText, answerText);
+    const newDeck = await saveQuestion(deck.title, questionText, answerText);
     this.setState({ questionText: '', answerText: '' });
-    this.props.navigation.pop();
+    this.props.navigation.navigate('DeckDetail', { deck: newDeck });
   }
 
   render() {

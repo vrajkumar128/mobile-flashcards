@@ -26,52 +26,55 @@ export const determineCardPlurality = (deck) => (
 );
 
 // Clear notifications
-export const clearLocalNotifications = async () => {
-  await AsyncStorage.removeItem(NOTIFICATION_KEY);
-  Notifications.cancelAllScheduledNotificationsAsync();
-};
+export function clearLocalNotification() {
+  return AsyncStorage.removeItem(NOTIFICATION_KEY)
+    .then(Notifications.cancelAllScheduledNotificationsAsync);
+}
 
-// Define the notification to be sent
-const createNotification = () => ({
-  title: 'Log your stats!',
-  body: `Don't forget to log your stats for today!`,
-  ios: {
-    sound: true
-  },
-  android: {
-    sound: true,
-    priority: 'high',
-    sticky: false,
-    vibrate: true
-  }
-});
-
-// Set notification in AsyncStorage
-export const setLocalNotification = async () => {
-  // Check if notification has already been set
-  const rawData = await AsyncStorage.getItem(NOTIFICATION_KEY);
-  const jsonData = JSON.parse(rawData);
-
-  if (jsonData === null) {
-    const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-
-    if (status === 'granted') {
-      Notifications.cancelAllScheduledNotificationsAsync(); // Prevent duplicate notifications
-      let tomorrow = new Date();
-
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      tomorrow.setHours(20);
-      tomorrow.setMinutes(0);
-      // Set time and frequency of notification
-      Notifications.scheduleLocalNotificationAsync(
-        createNotification(),
-        {
-          time: tomorrow,
-          repeat: 'day'
-        }
-      );
-      
-      AsyncStorage.setItem(NOTIFICATION_KEY, JSON.stringify(true));
+// Define notification to be sent
+function createNotification() {
+  return {
+    title: 'Take a Quiz!',
+    body: "Remember to take a quiz today!",
+    ios: {
+      sound: true,
+    },
+    android: {
+      sound: true,
+      priority: 'high',
+      sticky: false,
+      vibrate: true,
     }
   }
-};
+}
+
+// Set notification in AsyncStorage
+export function setLocalNotification() {
+  AsyncStorage.getItem(NOTIFICATION_KEY)
+    .then(JSON.parse)
+    .then((data) => {
+      if (data === null) { // Check if notification has not already been set
+        Permissions.askAsync(Permissions.NOTIFICATIONS)
+          .then(({ status }) => {
+            if (status === 'granted') {
+              Notifications.cancelAllScheduledNotificationsAsync(); // Prevent duplicate notifications
+
+              let tomorrow = new Date();
+              tomorrow.setDate(tomorrow.getDate() + 1);
+              tomorrow.setHours(20);
+              tomorrow.setMinutes(0);
+              // Set time and frequency of notifications
+              Notifications.scheduleLocalNotificationAsync(
+                createNotification(),
+                {
+                  time: tomorrow,
+                  repeat: 'day',
+                }
+              );
+
+              AsyncStorage.setItem(NOTIFICATION_KEY, JSON.stringify(true));
+            }
+          })
+      }
+    })
+}

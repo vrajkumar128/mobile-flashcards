@@ -4,8 +4,9 @@ import styles from './styles';
 import { getDeck } from '../../utils/api';
 import { determineCardPlurality } from '../../utils/helpers';
 import TextButton from '../../components/TextButton/TextButton';
+import { clearLocalNotification, setLocalNotification } from '../../utils/helpers';
 
-class DeckDetail extends React.PureComponent {
+class DeckDetail extends React.Component {
   // Set screen header to title of deck
   static navigationOptions = ({ navigation }) => {
     const { title } = navigation.state.params.deck;
@@ -19,25 +20,32 @@ class DeckDetail extends React.PureComponent {
     deck: null
   }
 
-  // Retrieve the current deck's details
-  async componentDidMount() {
+  // Refresh the deck
+  refreshDeck = async () => {
     const { title } = this.props.navigation.state.params.deck;
     const deck = await getDeck(title);
     this.setState({ deck });
   }
 
-  // Reload the component upon a change in questions
-  async componentDidUpdate(prevProps, prevState) {
-    if (prevState !== this.state) {
-      const { title } = this.props.navigation.state.params.deck;
-      const deck = await getDeck(title);
-      this.setState({ deck });
+  // Initialize the deck's details
+  componentDidMount() {
+    this.refreshDeck();
+  }
+
+  // Reload the deck's details upon adding a card
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) {
+      this.refreshDeck();
     }
   }
 
   // Begin a quiz
   runQuiz = () => {
-    const { deck } = this.props.navigation.state.params;
+    const { deck } = this.state;
+
+    clearLocalNotification()
+      .then(setLocalNotification());
+
     this.props.navigation.navigate('Quiz', {
       deck,
       questionIndex: 0,
@@ -61,7 +69,8 @@ class DeckDetail extends React.PureComponent {
               onPress={() => this.props.navigation.navigate('NewQuestion', { deck })} 
             />
             <TextButton 
-              text="Start a Quiz" 
+              text="Start a Quiz"
+              disabled={deck.questions.length === 0}
               onPress={this.runQuiz} 
             />
           </View>
