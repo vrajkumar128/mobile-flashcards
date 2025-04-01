@@ -1,38 +1,47 @@
-import React, { PureComponent } from 'react';
-import { KeyboardAvoidingView, TextInput } from 'react-native';
+import React, { useState, useLayoutEffect } from 'react';
+import { KeyboardAvoidingView, TextInput, Text, View } from 'react-native';
 import styles from './styles';
 import { saveDeck } from '../../utils/api';
 import TextButton from '../../components/TextButton/TextButton';
 
-class NewDeck extends PureComponent {
-  state = { 
-    text: ''
-  }
+const NewDeck = ({ navigation }) => {
+  const [text, setText] = useState('');
 
-  // Create a new deck, clear the input field, and redirect to Home
-  handleSubmit = async () => {
-    const { text } = this.state;
+  // Set screen header
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: 'New Deck'
+    });
+  }, [navigation]);
+
+  // Create a new deck, clear the input field, and redirect to DeckDetail
+  const handleSubmit = async () => {
     const savedDeck = await saveDeck(text);
     const newDeck = savedDeck[text];
-    this.setState({ text: '' });
-    this.props.navigation.navigate('DeckDetail', { deck: newDeck });
-  }
+    setText('');
+    navigation.navigate('DeckDetail', { deck: newDeck, deckId: newDeck.title });
+  };
 
-  render() {
-    const { text } = this.state;
-
-    return (
-      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-        <TextInput 
-          placeholder="Deck title" 
-          value={text} 
-          onChangeText={text => this.setState({ text })}
+  return (
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <View style={styles.inputContainer}>
+        <Text style={styles.inputLabel}>Deck Title:</Text>
+        <TextInput
+          placeholder="Enter title here"
+          placeholderTextColor="#aaa"
+          value={text}
+          onChangeText={setText}
           style={styles.inputField}
         />
-        <TextButton disabled={!text} text="Create Deck" onPress={this.handleSubmit} />
-      </KeyboardAvoidingView>
-    );
-  }
-}
+      </View>
+      <TextButton
+        disabled={!text}
+        text="Create Deck"
+        onPress={handleSubmit}
+        style={styles.createButton}
+      />
+    </KeyboardAvoidingView>
+  );
+};
 
 export default NewDeck;

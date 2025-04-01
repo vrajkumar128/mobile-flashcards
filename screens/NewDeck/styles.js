@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { gray, white } from '../../utils/colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -8,18 +9,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
 
-  inputField: {
-    width: '50%',
-    fontSize: 16
+  inputContainer: {
+    width: '80%',
+    marginBottom: 20,
+    alignItems: 'center'
   },
 
-  submitBtn: {
-    borderColor: 'black',
+  inputLabel: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    color: '#000',
+    textAlign: 'center'
+  },
+
+  inputField: {
+    width: '100%',
+    fontSize: 16,
+    padding: 10,
+    backgroundColor: white,
     borderWidth: 1,
-    borderStyle: 'solid',
-    borderRadius: 2,
-    alignItems: 'center',
-    width: '50%'
+    borderColor: '#000',
+    borderRadius: 5
+  },
+
+  createButton: {
+    backgroundColor: white,
+    cursor: 'pointer'
   }
 });
 

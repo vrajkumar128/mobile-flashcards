@@ -1,5 +1,13 @@
-import { AsyncStorage } from 'react-native';
-import { Notifications, Permissions } from 'expo';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Notifications from 'expo-notifications';
+let Device;
+try {
+  Device = require('expo-device');
+} catch (e) {
+  Device = {
+    isDevice: true
+  };
+}
 
 // AsyncStorage key for local notifications
 const NOTIFICATION_KEY = 'vrrajkum-flashcards:notifications';
@@ -26,55 +34,71 @@ export const determineCardPlurality = (deck) => (
 );
 
 // Clear notifications
-export function clearLocalNotification() {
-  return AsyncStorage.removeItem(NOTIFICATION_KEY)
-    .then(Notifications.cancelAllScheduledNotificationsAsync);
+export async function clearLocalNotification() {
+  await AsyncStorage.removeItem(NOTIFICATION_KEY);
+  return Notifications.cancelAllScheduledNotificationsAsync();
 }
 
-// Define notification to be sent
-function createNotification() {
-  return {
-    title: 'Take a Quiz!',
-    body: "Remember to take a quiz today!",
-    ios: {
-      sound: true,
-    },
-    android: {
-      sound: true,
-      priority: 'high',
-      sticky: false,
-      vibrate: true,
-    }
-  }
+// Configure notification behavior
+async function configureNotifications() {
+  await Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    }),
+  });
 }
 
 // Set notification in AsyncStorage
-export function setLocalNotification() {
-  AsyncStorage.getItem(NOTIFICATION_KEY)
-    .then(JSON.parse)
-    .then((data) => {
-      if (data === null) { // Check if notification has not already been set
-        Permissions.askAsync(Permissions.NOTIFICATIONS)
-          .then(({ status }) => {
-            if (status === 'granted') {
-              Notifications.cancelAllScheduledNotificationsAsync(); // Prevent duplicate notifications
+export async function setLocalNotification() {
+  try {
+    const data = await AsyncStorage.getItem(NOTIFICATION_KEY);
+    const parsedData = JSON.parse(data);
 
-              let tomorrow = new Date();
-              tomorrow.setDate(tomorrow.getDate() + 1);
-              tomorrow.setHours(20);
-              tomorrow.setMinutes(0);
-              // Set time and frequency of notifications
-              Notifications.scheduleLocalNotificationAsync(
-                createNotification(),
-                {
-                  time: tomorrow,
-                  repeat: 'day',
-                }
-              );
+    if (parsedData === null) {
+      // Configure notifications handler
+      await configureNotifications();
 
-              AsyncStorage.setItem(NOTIFICATION_KEY, JSON.stringify(true));
-            }
-          })
+      // Check if the device can receive notifications
+      if (Device.isDevice) {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+
+        if (existingStatus !== 'granted') {
+          const { status } = await Notifications.requestPermissionsAsync();
+          finalStatus = status;
+        }
+
+        if (finalStatus === 'granted') {
+          // Cancel any existing notifications to prevent duplicates
+          await Notifications.cancelAllScheduledNotificationsAsync();
+
+          // Schedule notification for tomorrow at 8 PM
+          let tomorrow = new Date();
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          tomorrow.setHours(20);
+          tomorrow.setMinutes(0);
+          tomorrow.setSeconds(0);
+
+          await Notifications.scheduleNotificationAsync({
+            content: {
+              title: 'Take a Quiz!',
+              body: "Remember to take a quiz today!",
+              sound: true,
+            },
+            trigger: {
+              hour: 20,
+              minute: 0,
+              repeats: true,
+            },
+          });
+
+          await AsyncStorage.setItem(NOTIFICATION_KEY, JSON.stringify(true));
+        }
       }
-    })
+    }
+  } catch (error) {
+    console.log('Error setting up notification:', error);
+  }
 }

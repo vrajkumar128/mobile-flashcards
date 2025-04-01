@@ -1,54 +1,62 @@
-import React, { PureComponent } from 'react';
-import { KeyboardAvoidingView, TextInput, Text } from 'react-native';
+import React, { useState, useLayoutEffect } from 'react';
+import { KeyboardAvoidingView, TextInput, Text, View } from 'react-native';
 import styles from './styles';
 import { saveQuestion } from '../../utils/api';
 import TextButton from '../../components/TextButton/TextButton';
 
-class NewDeck extends PureComponent {
+const NewQuestion = ({ route, navigation }) => {
+  const [questionText, setQuestionText] = useState('');
+  const [answerText, setAnswerText] = useState('');
+
+  const { deck } = route.params;
+
   // Set screen header
-  static navigationOptions = ({ navigation }) => {
-    const { deck } = navigation.state.params;
-    
-    return ({
+  useLayoutEffect(() => {
+    navigation.setOptions({
       title: `Add Card to ${deck.title}`
     });
-  }
-
-  state = { 
-    questionText: '',
-    answerText: '',
-  }
+  }, [navigation, deck]);
 
   // Save a new question, clear the input fields, and redirect to the respective DeckDetail
-  handleSubmit = async () => {
-    const { questionText, answerText } = this.state;
-    const { deck } = this.props.navigation.state.params;
+  const handleSubmit = async () => {
     const newDeck = await saveQuestion(deck.title, questionText, answerText);
-    this.setState({ questionText: '', answerText: '' });
-    this.props.navigation.navigate('DeckDetail', { deck: newDeck });
-  }
+    setQuestionText('');
+    setAnswerText('');
+    navigation.navigate('DeckDetail', { deck: newDeck, deckId: newDeck.title });
+  };
 
-  render() {
-    const { questionText, answerText } = this.state;
-
-    return (
-      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-        <TextInput 
-          placeholder="Question" 
-          value={questionText} 
-          onChangeText={questionText => this.setState({ questionText })}
+  return (
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <View style={styles.inputContainer}>
+        <Text style={styles.inputLabel}>Question:</Text>
+        <TextInput
+          placeholder="Enter question here"
+          placeholderTextColor="#aaa"
+          value={questionText}
+          onChangeText={setQuestionText}
           style={styles.inputField}
         />
-        <TextInput 
-          placeholder="Answer" 
-          value={answerText} 
-          onChangeText={answerText => this.setState({ answerText })}
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.inputLabel}>Answer:</Text>
+        <TextInput
+          placeholder="Enter answer here"
+          placeholderTextColor="#aaa"
+          value={answerText}
+          onChangeText={setAnswerText}
           style={styles.inputField}
         />
-        <TextButton disabled={!questionText || !answerText} text="Add Card" onPress={this.handleSubmit} />
-      </KeyboardAvoidingView>
-    );
-  }
-}
+      </View>
 
-export default NewDeck;
+      <TextButton
+        disabled={!questionText || !answerText}
+        text="Add Card"
+        onPress={handleSubmit}
+        style={styles.addButton}
+      />
+    </KeyboardAvoidingView>
+  );
+};
+
+export default NewQuestion;

@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { formatNewDeck, formatNewQuestion } from './helpers';
 import { baseDecks } from './_DATA';
 
@@ -10,8 +10,8 @@ export const getDecks = async () => {
   try {
     const decks = await AsyncStorage.getItem(DECKS_STORAGE_KEY);
     if (!decks) {
-      const initialDecks = await AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(baseDecks));
-      return initialDecks;
+      await AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(baseDecks));
+      return baseDecks;
     }
 
     return JSON.parse(decks);
@@ -36,7 +36,12 @@ export const getDeck = async (deckName) => {
 export const saveDeck = async (deckName) => {
   try {
     const newDeck = formatNewDeck(deckName);
-    await AsyncStorage.mergeItem(DECKS_STORAGE_KEY, JSON.stringify(newDeck));
+    const decks = await getDecks();
+    const updatedDecks = {
+      ...decks,
+      ...newDeck
+    };
+    await AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(updatedDecks));
     return newDeck;
   } catch (err) {
     console.error(err);
@@ -44,7 +49,7 @@ export const saveDeck = async (deckName) => {
   }
 };
 
-// Merge a new question into the given deck in AsyncStorage
+// Add a new question to the given deck in AsyncStorage
 export const saveQuestion = async (deckName, questionText, answerText) => {
   try {
     const decks = await getDecks();

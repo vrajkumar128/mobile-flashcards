@@ -3,23 +3,35 @@ import { gray } from '../../utils/colors';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
+  },
+
+  scrollContainer: {
+    flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
+    paddingHorizontal: 20
   },
 
   subcontainer: {
     alignItems: 'center',
-    width: '100%'
+    width: '100%',
+    marginVertical: 20
   },
 
   heading: {
-    fontSize: 48
+    fontSize: 32,
+    textAlign: 'center',
+    marginBottom: 20,
+    paddingHorizontal: 10
   },
 
   caption: {
-    fontSize: 24,
-    color: gray
+    fontSize: 20,
+    color: '#000',
+    textAlign: 'center',
+    textDecorationLine: 'underline',
+    marginTop: 10
   }
 });
 
