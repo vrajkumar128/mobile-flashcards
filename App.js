@@ -1,20 +1,21 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import { setLocalNotification } from './utils/helpers';
 import UdaciStatusBar from './components/UdaciStatusBar';
-import StackNavigator from './navigators/StackNavigator';
+import MainNavigator from './navigators/MainNavigator';
+import { NavigationContainer } from '@react-navigation/native';
 
-export default class App extends Component {
-  componentDidMount() {
+export default function App() {
+  useEffect(() => {
     setLocalNotification();
-  }
+  }, []);
 
-  render() {
-    return (
-        <View style={{ flex: 1 }}>
-          <UdaciStatusBar backgroundColor='#000' />
-          <StackNavigator />
-        </View>
-    );
-  }
+  return (
+    <View style={{ flex: 1 }}>
+      <UdaciStatusBar backgroundColor='#000' />
+      <NavigationContainer>
+        <MainNavigator />
+      </NavigationContainer>
+    </View>
+  );
 }

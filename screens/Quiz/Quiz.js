@@ -1,132 +1,100 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
+import { View, Text, ScrollView } from 'react-native';
 import styles from './styles';
 import TextButton from '../../components/TextButton/TextButton';
 
-class Quiz extends React.PureComponent {
-  // Set screen header
-  static navigationOptions = ({ navigation }) => {
-    const { deck, questionIndex } = navigation.state.params;
+const Quiz = ({ route, navigation }) => {
+  const [showAns, setShowAns] = useState(false);
+  const [numCorrect, setNumCorrect] = useState(0);
+  const [isLastQuestion, setIsLastQuestion] = useState(false);
+  const [questionIndex, setQuestionIndex] = useState(0);
 
-    return ({
+  const { deck } = route.params;
+
+  // Set screen header
+  useLayoutEffect(() => {
+    navigation.setOptions({
       title: `${deck.title} Quiz (${questionIndex + 1}/${deck.questions.length})`
     });
-  }
+  }, [navigation, deck, questionIndex]);
 
-  state = {
-    numCorrect: 0,
-    showAns: false,
-    isLastQuestion: false
-  }
+  // Initialize state
+  useEffect(() => {
+    const initialQuestionIndex = route.params.questionIndex || 0;
+    const initialNumCorrect = route.params.numCorrect || 0;
 
-  // Reset state
-  componentDidMount() {
-    const { deck, questionIndex, numCorrect } = this.props.navigation.state.params;
+    setShowAns(false);
+    setQuestionIndex(initialQuestionIndex);
+    setNumCorrect(initialNumCorrect);
 
-    this.setState({
-      showAns: false,
-      questionIndex,
-      numCorrect,
-      isLastQuestion: false
-    });
-
-    if (questionIndex + 1 === deck.questions.length) {
-      this.setState({
-        isLastQuestion: true,
-      });
+    if (initialQuestionIndex + 1 === deck.questions.length) {
+      setIsLastQuestion(true);
+    } else {
+      setIsLastQuestion(false);
     }
-  }
-
-  // Refresh component for each subsequent question
-  componentDidUpdate(prevProps) {
-    const { deck, questionIndex, numCorrect } = this.props.navigation.state.params;
-
-    if (prevProps !== this.props) {
-      this.setState({
-        showAns: false,
-        questionIndex,
-        numCorrect,
-        isLastQuestion: false
-      });
-  
-      if (questionIndex + 1 === deck.questions.length) {
-        this.setState({
-          isLastQuestion: true,
-        });
-      }
-    }
-  }
+  }, [route.params, deck.questions.length]);
 
   // Display the question or answer depending on state
-  questionOrAnswer = () => {
-    const { deck, questionIndex } = this.props.navigation.state.params;
-    const { showAns } = this.state;
-
+  const questionOrAnswer = () => {
     return showAns
       ? deck.questions[questionIndex].answer
-      : deck.questions[questionIndex].question
-  }
+      : deck.questions[questionIndex].question;
+  };
 
   // Show the answer
-  showAnswer = () => {
-    this.setState(currentState => ({
-      showAns: !currentState.showAns
-    }));
-  }
+  const showAnswer = () => {
+    setShowAns(prevState => !prevState);
+  };
 
   // Display the next question
-  nextQuestion = () => {
-    const { deck, questionIndex } = this.props.navigation.state.params;
-    const { isLastQuestion, numCorrect} = this.state;
+  const nextQuestion = (additionalCorrect = 0) => {
+    const updatedCorrect = numCorrect + additionalCorrect;
 
     if (isLastQuestion) {
-      this.props.navigation.navigate('Score', {
+      navigation.navigate('Score', {
         deck,
-        numCorrect
+        numCorrect: updatedCorrect
       });
     } else {
-      this.props.navigation.navigate('Quiz', {
+      navigation.navigate('Quiz', {
         deck,
         questionIndex: questionIndex + 1,
-        numCorrect
+        numCorrect: updatedCorrect
       });
     }
-  }
+  };
 
-  // If the user's answer was correct, increment one to the score and then go to the next question
-  isCorrect = () => {
-    this.setState(currentState => ({
-      numCorrect: currentState.numCorrect + 1
-    }), () => this.nextQuestion());
-  }
+  // If the user's answer was correct, increment score and go to next question
+  const isCorrect = () => {
+    nextQuestion(1);
+  };
 
-  render() {
-    const { deck } = this.props.navigation.state.params;
-
-    if (deck) {
-      return (
-        <View style={styles.container}>
-          <View className="text" style={styles.subcontainer}>
-            <Text style={styles.heading}>{this.questionOrAnswer()}</Text>
-            <Text style={styles.caption} onPress={this.showAnswer}>Show Answer</Text>
+  if (deck) {
+    return (
+      <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.subcontainer}>
+            <Text style={styles.heading}>{questionOrAnswer()}</Text>
+            <Text style={styles.caption} onPress={showAnswer}>
+              {showAns ? "Show Question" : "Show Answer"}
+            </Text>
           </View>
-          <View className="buttons" style={styles.subcontainer}>
-            <TextButton 
-              text="Correct" 
-              onPress={this.isCorrect} 
+          <View style={styles.subcontainer}>
+            <TextButton
+              text="Correct"
+              onPress={isCorrect}
             />
-            <TextButton 
-              text="Incorrect" 
-              onPress={this.nextQuestion} 
+            <TextButton
+              text="Incorrect"
+              onPress={() => nextQuestion(0)}
             />
           </View>
-        </View>
-      );
-    }
-
-    return null;
-    
+        </ScrollView>
+      </View>
+    );
   }
-}
+
+  return null;
+};
 
 export default Quiz;

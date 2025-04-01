@@ -1,16 +1,27 @@
 import { StyleSheet } from 'react-native';
-import { black } from '../../utils/colors';
+import { white, black } from '../../utils/colors';
 
 const styles = StyleSheet.create({
   btn: {
-    width: '45%',
-    alignItems: 'center',
-    borderWidth: 1,
+    backgroundColor: white,
     borderColor: black,
-    borderStyle: 'solid',
-    borderRadius: 2,
-    paddingTop: 15,
-    paddingBottom: 15
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    width: 150,
+    alignItems: 'center',
+    marginVertical: 10,
+    cursor: 'pointer'
+  },
+  btnPressed: {
+    backgroundColor: black,
+  },
+  btnText: {
+    fontSize: 18,
+    color: black
+  },
+  btnTextPressed: {
+    color: white
   }
 });
 
