@@ -1,6 +1,6 @@
 # Mobile Flashcards
 
-A flashcards app, tested on the Android operating system.
+A mobile React Native app which lets you create flashcard decks and quiz yourself on their contents.
 
 ## Directions
 
