@@ -1,30 +1,31 @@
 import { StyleSheet } from 'react-native';
-import { white, black } from '../../utils/colors';
+import { white, black, blue, darkBlue } from '../../utils/colors';
 
 const styles = StyleSheet.create({
   container: {
     width: '85%',
+    alignSelf: 'center',
     alignItems: 'center',
     backgroundColor: white,
-    marginLeft: 20,
-    marginRight: 20,
-    marginTop: 10,
-    marginBottom: 10,
+    marginVertical: 10,
     borderRadius: 2,
     borderWidth: 1,
     borderColor: black,
     cursor: 'pointer'
   },
   containerPressed: {
-    backgroundColor: black,
+    backgroundColor: darkBlue,
+    borderColor: white
   },
   contents: {
     alignItems: 'center',
+    width: '100%',
     marginTop: 10,
     marginBottom: 10
   },
   title: {
-    fontSize: 20
+    fontSize: 20,
+    color: black
   },
   text: {
     color: black

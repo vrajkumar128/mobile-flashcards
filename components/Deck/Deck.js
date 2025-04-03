@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { determineCardPlurality } from '../../utils/helpers';
-import { white, black } from '../../utils/colors';
+import styles from './styles';
 
 // List deck names and # of cards in a given deck
 const Deck = ({ deck, ...rest }) => {
@@ -11,36 +11,24 @@ const Deck = ({ deck, ...rest }) => {
     <TouchableOpacity
       key={deck.title}
       {...rest}
-      style={{
-        width: '85%',
-        alignItems: 'center',
-        backgroundColor: isPressed ? black : white,
-        marginLeft: 20,
-        marginRight: 20,
-        marginTop: 10,
-        marginBottom: 10,
-        borderRadius: 2,
-        borderWidth: 1,
-        borderColor: black,
-        cursor: 'pointer'
-      }}
+      style={[
+        styles.container,
+        isPressed && styles.containerPressed
+      ]}
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
     >
-      <View style={{
-        alignItems: 'center',
-        marginTop: 10,
-        marginBottom: 10
-      }}>
-        <Text style={{
-          fontSize: 20,
-          color: isPressed ? white : black
-        }}>
+      <View style={styles.contents}>
+        <Text style={[
+          styles.title,
+          isPressed && styles.textPressed
+        ]}>
           {deck.title}
         </Text>
-        <Text style={{
-          color: isPressed ? white : black
-        }}>
+        <Text style={[
+          styles.text,
+          isPressed && styles.textPressed
+        ]}>
           {deck.questions.length} {determineCardPlurality(deck)}
         </Text>
       </View>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Text, TouchableOpacity } from 'react-native';
-import { white, black } from '../../utils/colors';
+import styles from './styles';
 
 const TextButton = ({ text, style = {}, ...rest }) => {
   const [isPressed, setIsPressed] = useState(false);
@@ -9,26 +9,17 @@ const TextButton = ({ text, style = {}, ...rest }) => {
     <TouchableOpacity
       {...rest}
       style={[
-        {
-          backgroundColor: isPressed ? black : white,
-          borderColor: black,
-          borderWidth: 1,
-          borderRadius: 5,
-          padding: 10,
-          width: 150,
-          alignItems: 'center',
-          marginVertical: 10,
-          cursor: 'pointer'
-        },
+        styles.btn,
+        isPressed && styles.btnPressed,
         style
       ]}
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
     >
-      <Text style={{
-        fontSize: 18,
-        color: isPressed ? white : black
-      }}>
+      <Text style={[
+        styles.btnText,
+        isPressed && styles.btnTextPressed
+      ]}>
         {text}
       </Text>
     </TouchableOpacity>

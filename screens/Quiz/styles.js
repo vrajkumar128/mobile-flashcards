@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { gray } from '../../utils/colors';
+import { blue } from '../../utils/colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
 
   caption: {
     fontSize: 20,
-    color: '#000',
+    color: blue,
     textAlign: 'center',
     textDecorationLine: 'underline',
     marginTop: 10
