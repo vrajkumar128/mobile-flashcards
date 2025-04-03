@@ -98,3 +98,14 @@ export const saveQuestionList = async (deckName, questions) => {
     alert('There was an error updating the questions. Please try again.');
   }
 };
+
+// Save the current deck order to AsyncStorage
+export const saveDecksOrder = async (decks) => {
+  try {
+    await AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(decks));
+    return decks;
+  } catch (err) {
+    console.error(err);
+    alert('There was an error saving the deck order. Please try again.');
+  }
+};

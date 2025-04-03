@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { white, black, blue, darkBlue } from '../../utils/colors';
+import { white, black, blue, darkBlue, lightBlue } from '../../utils/colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -17,6 +17,15 @@ const styles = StyleSheet.create({
     backgroundColor: darkBlue,
     borderColor: white
   },
+  containerDragging: {
+    backgroundColor: lightBlue,
+    elevation: 5,
+    shadowColor: black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    transform: [{ scale: 1.05 }]
+  },
   contents: {
     alignItems: 'center',
     width: '100%',
@@ -32,6 +41,10 @@ const styles = StyleSheet.create({
   },
   textPressed: {
     color: white
+  },
+  textDragging: {
+    color: darkBlue,
+    fontWeight: 'bold'
   }
 });
 
