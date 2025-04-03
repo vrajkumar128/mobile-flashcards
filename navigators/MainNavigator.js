@@ -5,6 +5,7 @@ import TabNavigator from './TabNavigator';
 import NewQuestion from '../screens/NewQuestion/NewQuestion';
 import Quiz from '../screens/Quiz/Quiz';
 import Score from '../screens/Score/Score';
+import QuestionList from '../screens/QuestionList/QuestionList';
 import { white, darkBlue } from '../utils/colors';
 
 const Stack = createStackNavigator();
@@ -50,6 +51,16 @@ const MainNavigator = () => {
             <Stack.Screen
                 name="Score"
                 component={Score}
+                options={{
+                    headerTintColor: white,
+                    headerStyle: {
+                        backgroundColor: darkBlue,
+                    }
+                }}
+            />
+            <Stack.Screen
+                name="QuestionList"
+                component={QuestionList}
                 options={{
                     headerTintColor: white,
                     headerStyle: {

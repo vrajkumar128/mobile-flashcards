@@ -6,6 +6,7 @@ const TextButton = ({ text, style = {}, ...rest }) => {
   const [isPressed, setIsPressed] = useState(false);
   const { disabled } = rest;
 
+  // Create style arrays safely
   const buttonStyles = [styles.btn];
   if (isPressed && !disabled) buttonStyles.push(styles.btnPressed);
   if (disabled) buttonStyles.push(styles.btnDisabled);

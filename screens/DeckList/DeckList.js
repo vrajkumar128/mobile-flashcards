@@ -25,8 +25,6 @@ const DeckList = ({ navigation }) => {
 
   // Handle long press to show delete confirmation
   const handleLongPress = (deck) => {
-    console.log('Long press detected for:', deck.title);
-
     Alert.alert(
       'Delete Deck',
       `Are you sure you want to delete the "${deck.title}" deck?`,
@@ -43,7 +41,8 @@ const DeckList = ({ navigation }) => {
             refreshDecks();
           }
         }
-      ]
+      ],
+      { cancelable: true }
     );
   };
 
@@ -60,7 +59,6 @@ const DeckList = ({ navigation }) => {
               deck={item}
               onPress={() => handlePress(item)}
               onLongPress={() => handleLongPress(item)}
-              delayLongPress={500}
             />
           )}
           keyExtractor={item => item.title}
