@@ -46,7 +46,7 @@ const DeckDetail = ({ route, navigation }) => {
     return (
       <View style={styles.container}>
         <View style={styles.flexContainer}>
-          <View style={styles.headerContainer}>
+          <View style={styles.groupedContainer}>
             <Text style={styles.heading}>{deck.title}</Text>
             <Text style={styles.caption}>{deck.questions.length} {determineCardPlurality(deck)}</Text>
           </View>
@@ -57,10 +57,17 @@ const DeckDetail = ({ route, navigation }) => {
             onPress={runQuiz}
           />
 
-          <TextButton
-            text="Add Card"
-            onPress={() => navigation.navigate('NewQuestion', { deck })}
-          />
+          <View style={styles.groupedContainer}>
+            <TextButton
+              text="Add Card"
+              onPress={() => navigation.navigate('NewQuestion', { deck })}
+            />
+
+            <TextButton
+              text="Remove Card"
+              onPress={() => navigation.navigate('NewQuestion', { deck })}
+            />
+          </View>
         </View>
       </View>
     );

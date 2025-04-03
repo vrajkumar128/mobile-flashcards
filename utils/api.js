@@ -62,3 +62,21 @@ export const saveQuestion = async (deckName, questionText, answerText) => {
     alert('There was an error saving the question. Please try again.');
   }
 };
+
+// Remove a deck from AsyncStorage
+export const removeDeck = async (deckName) => {
+  try {
+    const decks = await getDecks();
+
+    if (!decks[deckName]) {
+      return;
+    }
+
+    const { [deckName]: removed, ...remainingDecks } = decks;
+    await AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(remainingDecks));
+    return remainingDecks;
+  } catch (err) {
+    console.error(err);
+    alert('There was an error deleting the deck. Please try again.');
+  }
+};
