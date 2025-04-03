@@ -64,8 +64,9 @@ const DeckDetail = ({ route, navigation }) => {
             />
 
             <TextButton
-              text="Remove Card"
-              onPress={() => navigation.navigate('NewQuestion', { deck })}
+              text="Remove Cards"
+              disabled={deck.questions.length === 0}
+              onPress={() => navigation.navigate('QuestionList', { deckId: deck.title })}
             />
           </View>
         </View>

@@ -80,3 +80,21 @@ export const removeDeck = async (deckName) => {
     alert('There was an error deleting the deck. Please try again.');
   }
 };
+
+// Update the questions list for a deck
+export const saveQuestionList = async (deckName, questions) => {
+  try {
+    const decks = await getDecks();
+
+    if (!decks[deckName]) {
+      return;
+    }
+
+    decks[deckName].questions = questions;
+    await AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(decks));
+    return decks[deckName];
+  } catch (err) {
+    console.error(err);
+    alert('There was an error updating the questions. Please try again.');
+  }
+};
