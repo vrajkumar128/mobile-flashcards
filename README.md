@@ -1,6 +1,6 @@
-# Mobile Flashcards
+# [Mobile Flashcards](https://snack.expo.dev/@vrrajkum/mobile-flashcards)
 
-A mobile React Native app which lets you create flashcard decks and quiz yourself on their contents.
+A mobile app which lets you create flashcard decks and quiz yourself on their contents. Built with React Native as part of [Udacity's React Nanodegree](https://www.udacity.com/certificate/ZN5DQYLY) program.
 
 ## Directions
 
