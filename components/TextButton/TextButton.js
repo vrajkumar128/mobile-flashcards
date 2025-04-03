@@ -6,11 +6,10 @@ const TextButton = ({ text, style = {}, ...rest }) => {
   const [isPressed, setIsPressed] = useState(false);
   const { disabled } = rest;
 
-  // Create style arrays safely
   const buttonStyles = [styles.btn];
   if (isPressed && !disabled) buttonStyles.push(styles.btnPressed);
   if (disabled) buttonStyles.push(styles.btnDisabled);
-  if (style) buttonStyles.push(style);
+  buttonStyles.push(style);
 
   const textStyles = [styles.btnText];
   if (isPressed && !disabled) textStyles.push(styles.btnTextPressed);
@@ -20,8 +19,8 @@ const TextButton = ({ text, style = {}, ...rest }) => {
     <TouchableOpacity
       {...rest}
       style={buttonStyles}
-      onPressIn={() => !disabled && setIsPressed(true)}
-      onPressOut={() => !disabled && setIsPressed(false)}
+      onPressIn={() => setIsPressed(true)}
+      onPressOut={() => setIsPressed(false)}
     >
       <Text style={textStyles}>
         {text}

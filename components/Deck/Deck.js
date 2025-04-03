@@ -4,12 +4,17 @@ import { determineCardPlurality } from '../../utils/helpers';
 import styles from './styles';
 
 // List deck names and # of cards in a given deck
-const Deck = ({ deck, ...rest }) => {
+const Deck = ({ deck, onLongPress, delayLongPress = 500, ...rest }) => {
   const [isPressed, setIsPressed] = useState(false);
 
   return (
     <TouchableOpacity
       key={deck.title}
+      onLongPress={() => {
+        console.log('Long press triggered');
+        if (onLongPress) onLongPress();
+      }}
+      delayLongPress={delayLongPress}
       {...rest}
       style={[
         styles.container,

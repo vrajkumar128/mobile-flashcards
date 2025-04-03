@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
 
-  headerContainer: {
+  groupedContainer: {
     alignItems: 'center',
     width: '100%'
   },

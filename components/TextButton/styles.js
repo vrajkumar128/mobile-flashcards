@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
   },
   btnPressed: {
     backgroundColor: darkBlue,
+    borderColor: black
   },
   btnText: {
     fontSize: 18,
