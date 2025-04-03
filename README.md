@@ -8,7 +8,7 @@ A mobile app which lets you create flashcard decks and quiz yourself on their co
   <li>Ensure you have the Expo Go app installed on your phone.
     <ol>
       <li><a href="https://play.google.com/store/apps/details?id=host.exp.exponent">Google Play</a></li>
-      <li><a href="https://apps.apple.com/us/app/expo-go/id982107779">Apple App Store</a></li>
+      <li><a href="https://apps.apple.com/us/app/expo-go/id982107779">App Store</a></li>
     </ol>
   </li>
   <li>Install Expo on your computer with <code>npm install -g expo</code>.</li>
