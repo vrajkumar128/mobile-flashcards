@@ -5,11 +5,11 @@ export const baseDecks = {
     questions: [
       {
         question: 'What is React?',
-        answer: 'A library for managing user interfaces'
+        answer: 'A JavaScript library for managing user interfaces.'
       },
       {
-        question: 'Where do you make Ajax requests in React?',
-        answer: 'The componentDidMount lifecycle event'
+        question: 'Where in the React component lifecycle should you make AJAX requests?',
+        answer: 'The componentDidMount lifecycle event.'
       }
     ]
   },

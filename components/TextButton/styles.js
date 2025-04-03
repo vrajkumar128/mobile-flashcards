@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { white, black } from '../../utils/colors';
+import { white, black, blue, darkBlue } from '../../utils/colors';
 
 const styles = StyleSheet.create({
   btn: {
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     cursor: 'pointer'
   },
   btnPressed: {
-    backgroundColor: black,
+    backgroundColor: darkBlue,
   },
   btnText: {
     fontSize: 18,

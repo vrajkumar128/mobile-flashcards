@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { gray } from '../../utils/colors';
+import { gray, blue } from '../../utils/colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -14,7 +14,8 @@ const styles = StyleSheet.create({
   },
 
   heading: {
-    fontSize: 48
+    fontSize: 48,
+    color: blue
   },
 
   caption: {

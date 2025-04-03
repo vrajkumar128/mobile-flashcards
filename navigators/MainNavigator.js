@@ -5,7 +5,7 @@ import TabNavigator from './TabNavigator';
 import NewQuestion from '../screens/NewQuestion/NewQuestion';
 import Quiz from '../screens/Quiz/Quiz';
 import Score from '../screens/Score/Score';
-import { black, white } from '../utils/colors';
+import { white, darkBlue } from '../utils/colors';
 
 const Stack = createStackNavigator();
 
@@ -23,7 +23,7 @@ const MainNavigator = () => {
                 options={{
                     headerTintColor: white,
                     headerStyle: {
-                        backgroundColor: black,
+                        backgroundColor: darkBlue,
                     }
                 }}
             />
@@ -33,7 +33,7 @@ const MainNavigator = () => {
                 options={{
                     headerTintColor: white,
                     headerStyle: {
-                        backgroundColor: black,
+                        backgroundColor: darkBlue,
                     }
                 }}
             />
@@ -43,7 +43,7 @@ const MainNavigator = () => {
                 options={{
                     headerTintColor: white,
                     headerStyle: {
-                        backgroundColor: black,
+                        backgroundColor: darkBlue,
                     }
                 }}
             />
@@ -53,7 +53,7 @@ const MainNavigator = () => {
                 options={{
                     headerTintColor: white,
                     headerStyle: {
-                        backgroundColor: black,
+                        backgroundColor: darkBlue,
                     }
                 }}
             />

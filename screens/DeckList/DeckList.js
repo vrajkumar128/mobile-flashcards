@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { getDecks } from '../../utils/api';
 import Deck from '../../components/Deck/Deck';
+import styles from './styles';
 
 const DeckList = ({ navigation }) => {
   const [decks, setDecks] = useState(null);
@@ -23,14 +24,17 @@ const DeckList = ({ navigation }) => {
   };
 
   if (decks) {
-    const deckArray = Object.keys(decks).map(deckName => decks[deckName]); // Format decks for <FlatList /> component
+    const deckArray = Object.keys(decks).map(deckName => decks[deckName]);
 
     return (
-      <FlatList
-        data={deckArray}
-        renderItem={({ item }) => <Deck deck={item} onPress={() => handlePress(item)} />}
-        keyExtractor={item => item.title}
-      />
+      <View style={styles.container}>
+        <FlatList
+          contentContainerStyle={styles.listContainer}
+          data={deckArray}
+          renderItem={({ item }) => <Deck deck={item} onPress={() => handlePress(item)} />}
+          keyExtractor={item => item.title}
+        />
+      </View>
     );
   }
 

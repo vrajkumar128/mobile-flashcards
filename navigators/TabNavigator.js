@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import DeckList from '../screens/DeckList/DeckList';
 import NewDeck from '../screens/NewDeck/NewDeck';
-import { black, white } from '../utils/colors';
+import { white, gray, black, blue, darkBlue } from '../utils/colors';
 
 const Tab = createBottomTabNavigator();
 
@@ -12,9 +12,10 @@ const TabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: Platform.OS === 'ios' ? black : white,
+        tabBarActiveTintColor: white,
+        tabBarInactiveTintColor: black,
         tabBarStyle: {
-          backgroundColor: Platform.OS === 'ios' ? white : black,
+          backgroundColor: blue,
           shadowColor: 'rgba(0, 0, 0, 0.24)',
           shadowOffset: {
             width: 0,
@@ -30,6 +31,10 @@ const TabNavigator = () => {
         component={DeckList}
         options={{
           tabBarLabel: 'Decks',
+          headerStyle: {
+            backgroundColor: darkBlue,
+          },
+          headerTintColor: white,
           tabBarIcon: ({ color }) => (
             <Ionicons name="ios-bookmarks" size={30} color={color} />
           )
@@ -41,6 +46,10 @@ const TabNavigator = () => {
         options={{
           tabBarLabel: 'New Deck',
           title: 'New Deck',
+          headerStyle: {
+            backgroundColor: darkBlue,
+          },
+          headerTintColor: white,
           tabBarIcon: ({ color }) => (
             <FontAwesome name="plus-square" size={30} color={color} />
           )
