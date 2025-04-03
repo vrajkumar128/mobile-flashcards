@@ -45,24 +45,22 @@ const DeckDetail = ({ route, navigation }) => {
   if (deck) {
     return (
       <View style={styles.container}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.heading}>{deck.title}</Text>
-          <Text style={styles.caption}>{deck.questions.length} {determineCardPlurality(deck)}</Text>
-        </View>
+        <View style={styles.flexContainer}>
+          <View style={styles.headerContainer}>
+            <Text style={styles.heading}>{deck.title}</Text>
+            <Text style={styles.caption}>{deck.questions.length} {determineCardPlurality(deck)}</Text>
+          </View>
 
-        <View style={styles.buttonContainer}>
+          <TextButton
+            text="Start a Quiz"
+            disabled={deck.questions.length === 0}
+            onPress={runQuiz}
+          />
+
           <TextButton
             text="Add Card"
             onPress={() => navigation.navigate('NewQuestion', { deck })}
           />
-
-          <View style={styles.subcontainer}>
-            <TextButton
-              text="Start a Quiz"
-              disabled={deck.questions.length === 0}
-              onPress={runQuiz}
-            />
-          </View>
         </View>
       </View>
     );

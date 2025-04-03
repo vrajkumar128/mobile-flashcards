@@ -1,35 +1,30 @@
 import { StyleSheet } from 'react-native';
-import { gray, blue } from '../../utils/colors';
+import { gray, black } from '../../utils/colors';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center'
   },
 
-  subcontainer: {
+  flexContainer: {
+    height: '65%',
+    width: '100%',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100%'
+    // paddingVertical: 40,
+    alignSelf: 'center'
   },
 
   headerContainer: {
-    marginTop: 40,
     alignItems: 'center',
     width: '100%'
-  },
-
-  buttonContainer: {
-    flex: 1,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    paddingTop: 20,
-    paddingBottom: 40
   },
 
   heading: {
     fontSize: 48,
-    color: blue
+    color: black
   },
 
   caption: {

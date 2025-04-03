@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { white, black, blue, darkBlue } from '../../utils/colors';
+import { white, black, blue, darkBlue, gray } from '../../utils/colors';
 
 const styles = StyleSheet.create({
   btn: {
@@ -22,6 +22,15 @@ const styles = StyleSheet.create({
   },
   btnTextPressed: {
     color: white
+  },
+  btnDisabled: {
+    backgroundColor: '#f8f8f8',
+    borderColor: '#d3d3d3',
+    opacity: 0.6,
+    cursor: 'not-allowed'
+  },
+  btnTextDisabled: {
+    color: gray
   }
 });
 
