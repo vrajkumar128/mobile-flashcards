@@ -53,7 +53,7 @@ const NewDeck = ({ navigation }) => {
           disabled={!text}
           text="Create Deck"
           onPress={handleSubmit}
-          style={styles.createButton}
+          style={text ? styles.createButtonEnabled : null}
         />
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>

@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View } from 'react-native';
 import { getDecks, saveDeckOrder } from '../../utils/api';
 import Deck from '../../components/Deck/Deck';
 import styles from './styles';
 import DragList from 'react-native-draglist';
+import { useFocusEffect } from '@react-navigation/native';
 
 const DeckList = ({ navigation }) => {
   const [decksData, setDecksData] = useState(null);
@@ -24,6 +25,14 @@ const DeckList = ({ navigation }) => {
       setDeckArray(orderedDecks);
     }
   };
+
+  // Refresh decks every time the screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      refreshDecks();
+      return () => { }; // Cleanup function if needed
+    }, [])
+  );
 
   // Initialize the deck list
   useEffect(() => {

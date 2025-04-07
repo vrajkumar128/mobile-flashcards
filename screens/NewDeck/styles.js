@@ -36,6 +36,12 @@ const styles = StyleSheet.create({
   createButton: {
     backgroundColor: white,
     cursor: 'pointer'
+  },
+
+  createButtonEnabled: {
+    backgroundColor: '#4cd964',
+    color: white,
+    borderColor: black
   }
 });
 
