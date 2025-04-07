@@ -1,20 +1,27 @@
-import React, { useEffect, useState, useLayoutEffect, useCallback } from 'react';
-import { View, Text, Alert } from 'react-native';
+import React, { useState, useEffect, useLayoutEffect, useCallback } from 'react';
+import { View, Text, Alert, TouchableOpacity } from 'react-native';
 import styles from './styles';
 import { getDeck, removeDeck } from '../../utils/api';
 import { determineCardPlurality } from '../../utils/helpers';
 import TextButton from '../../components/TextButton/TextButton';
 import { clearLocalNotification, setLocalNotification } from '../../utils/helpers';
 import { Ionicons } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 const DeckDetail = ({ route, navigation }) => {
   const [deck, setDeck] = useState(null);
   const { deckId } = route.params;
 
-  // Handle deck deletion
-  const handleDeleteDeck = () => {
+  // Refresh the deck
+  const refreshDeck = useCallback(async () => {
+    const deckData = await getDeck(deckId);
+    setDeck(deckData);
+  }, [deckId]);
+
+  // Handle deck deletion - using useCallback
+  const handleDeleteDeck = useCallback(() => {
+    if (!deck) return;
+
     Alert.alert(
       'Delete Deck',
       `Are you sure you want to delete the "${deck.title}" deck?`,
@@ -34,7 +41,7 @@ const DeckDetail = ({ route, navigation }) => {
       ],
       { cancelable: true }
     );
-  };
+  }, [deck, navigation]);
 
   // Set screen header to title of deck and add trash icon
   useLayoutEffect(() => {
@@ -48,19 +55,13 @@ const DeckDetail = ({ route, navigation }) => {
         )
       });
     }
-  }, [navigation, deck]);
-
-  // Refresh the deck
-  const refreshDeck = useCallback(async () => {
-    const deckData = await getDeck(deckId);
-    setDeck(deckData);
-  }, [deckId]);
+  }, [navigation, deck, handleDeleteDeck]);
 
   // Refresh deck every time the screen comes into focus
   useFocusEffect(
     useCallback(() => {
       refreshDeck();
-      return () => { }; // Cleanup function if needed
+      return () => { };
     }, [refreshDeck])
   );
 

@@ -32,6 +32,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textDecorationLine: 'underline',
     marginTop: 10
+  },
+
+  correctButton: {
+    backgroundColor: '#4cd964',
+    borderColor: '#4cd964'
+  },
+
+  incorrectButton: {
+    backgroundColor: '#ff3b30',
+    borderColor: '#ff3b30'
   }
 });
 

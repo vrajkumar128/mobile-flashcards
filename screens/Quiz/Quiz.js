@@ -130,10 +130,12 @@ const Quiz = ({ route, navigation }) => {
             <TextButton
               text="Correct"
               onPress={isCorrect}
+              style={styles.correctButton}
             />
             <TextButton
               text="Incorrect"
               onPress={() => nextQuestion(0)}
+              style={styles.incorrectButton}
             />
           </View>
         </ScrollView>
