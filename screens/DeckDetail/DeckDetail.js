@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useLayoutEffect, useCallback } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Alert } from 'react-native';
 import styles from './styles';
-import { getDeck } from '../../utils/api';
+import { getDeck, removeDeck } from '../../utils/api';
 import { determineCardPlurality } from '../../utils/helpers';
 import TextButton from '../../components/TextButton/TextButton';
 import { clearLocalNotification, setLocalNotification } from '../../utils/helpers';
@@ -42,6 +42,29 @@ const DeckDetail = ({ route, navigation }) => {
     });
   };
 
+  // Handle deck deletion
+  const handleDeleteDeck = () => {
+    Alert.alert(
+      'Delete Deck',
+      `Are you sure you want to delete the "${deck.title}" deck?`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            await removeDeck(deck.title);
+            navigation.navigate('Home');
+          }
+        }
+      ],
+      { cancelable: true }
+    );
+  };
+
   if (deck) {
     return (
       <View style={styles.container}>
@@ -59,14 +82,14 @@ const DeckDetail = ({ route, navigation }) => {
 
           <View style={styles.groupedContainer}>
             <TextButton
-              text="Add Card"
-              onPress={() => navigation.navigate('NewQuestion', { deck })}
+              text="Manage Cards"
+              onPress={() => navigation.navigate('QuestionList', { deckId: deck.title })}
             />
 
             <TextButton
-              text="Remove Cards"
-              disabled={deck.questions.length === 0}
-              onPress={() => navigation.navigate('QuestionList', { deckId: deck.title })}
+              text="Delete Deck"
+              onPress={handleDeleteDeck}
+              style={{ backgroundColor: '#ff3b30', borderColor: '#ff3b30' }}
             />
           </View>
         </View>
