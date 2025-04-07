@@ -8,17 +8,36 @@ const Quiz = ({ route, navigation }) => {
   const [numCorrect, setNumCorrect] = useState(0);
   const [isLastQuestion, setIsLastQuestion] = useState(false);
   const [questionIndex, setQuestionIndex] = useState(0);
+  const [randomizedQuestions, setRandomizedQuestions] = useState([]);
 
   const { deck } = route.params;
 
+  // Fisher-Yates shuffle for randomizing question order
+  const fisherYatesShuffle = (array) => {
+    const shuffled = [...array]; // Create a copy of the array
+
+    // Start from the last element and swap with a random element before it (including itself)
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      // Generate random index between 0 and i (inclusive)
+      const j = Math.floor(Math.random() * (i + 1));
+
+      // Swap elements at indices i and j
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    return shuffled;
+  };
+
   // Set screen header
   useLayoutEffect(() => {
-    navigation.setOptions({
-      title: `${deck.title} Quiz (${questionIndex + 1}/${deck.questions.length})`
-    });
-  }, [navigation, deck, questionIndex]);
+    if (randomizedQuestions.length > 0) {
+      navigation.setOptions({
+        title: `${deck.title} Quiz (${questionIndex + 1}/${randomizedQuestions.length})`
+      });
+    }
+  }, [navigation, deck, questionIndex, randomizedQuestions.length]);
 
-  // Initialize state
+  // Initialize state and randomize questions
   useEffect(() => {
     const initialQuestionIndex = route.params.questionIndex || 0;
     const initialNumCorrect = route.params.numCorrect || 0;
@@ -27,39 +46,55 @@ const Quiz = ({ route, navigation }) => {
     setQuestionIndex(initialQuestionIndex);
     setNumCorrect(initialNumCorrect);
 
+    // Get randomized questions from route params or create a new shuffled array
+    if (initialQuestionIndex === 0 && !route.params.randomizedQuestions) {
+      // First time starting the quiz - randomize questions
+      const shuffledQuestions = fisherYatesShuffle(deck.questions);
+      setRandomizedQuestions(shuffledQuestions);
+    } else if (route.params.randomizedQuestions) {
+      // Coming from a previous question - use the same shuffled order
+      setRandomizedQuestions(route.params.randomizedQuestions);
+    }
+
+    // Check if this is the last question
     if (initialQuestionIndex + 1 === deck.questions.length) {
       setIsLastQuestion(true);
     } else {
       setIsLastQuestion(false);
     }
-  }, [route.params, deck.questions.length]);
+  }, [route.params, deck.questions]);
 
   // Display the question or answer depending on state
   const questionOrAnswer = () => {
+    if (randomizedQuestions.length === 0) return '';
+
     return showAns
-      ? deck.questions[questionIndex].answer
-      : deck.questions[questionIndex].question;
+      ? randomizedQuestions[questionIndex].answer
+      : randomizedQuestions[questionIndex].question;
   };
 
-  // Show the answer
+  // Toggle between showing question and answer
   const showAnswer = () => {
     setShowAns(prevState => !prevState);
   };
 
-  // Display the next question
+  // Navigate to the next question or to the score screen
   const nextQuestion = (additionalCorrect = 0) => {
     const updatedCorrect = numCorrect + additionalCorrect;
 
-    if (isLastQuestion) {
+    if (questionIndex + 1 === randomizedQuestions.length) {
+      // If this was the last question, go to the score screen
       navigation.navigate('Score', {
         deck,
         numCorrect: updatedCorrect
       });
     } else {
+      // Otherwise go to the next question
       navigation.navigate('Quiz', {
         deck,
         questionIndex: questionIndex + 1,
-        numCorrect: updatedCorrect
+        numCorrect: updatedCorrect,
+        randomizedQuestions: randomizedQuestions
       });
     }
   };
@@ -69,7 +104,7 @@ const Quiz = ({ route, navigation }) => {
     nextQuestion(1);
   };
 
-  if (deck) {
+  if (deck && randomizedQuestions.length > 0) {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
