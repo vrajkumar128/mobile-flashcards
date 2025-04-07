@@ -11,7 +11,8 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     borderWidth: 1,
     borderColor: black,
-    cursor: 'pointer'
+    cursor: 'pointer',
+    minHeight: 80
   },
   containerPressed: {
     backgroundColor: darkBlue,
@@ -20,8 +21,7 @@ const styles = StyleSheet.create({
   contents: {
     alignItems: 'center',
     width: '100%',
-    marginTop: 10,
-    marginBottom: 10
+    paddingVertical: 15
   },
   title: {
     fontSize: 20,

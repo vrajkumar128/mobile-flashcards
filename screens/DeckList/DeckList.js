@@ -1,16 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, View } from 'react-native';
-import { getDecks } from '../../utils/api';
+import { View } from 'react-native';
+import { getDecks, saveDeckOrder } from '../../utils/api';
 import Deck from '../../components/Deck/Deck';
 import styles from './styles';
+import DragList from 'react-native-draglist';
 
 const DeckList = ({ navigation }) => {
-  const [decks, setDecks] = useState(null);
+  const [decksData, setDecksData] = useState(null);
+  const [deckArray, setDeckArray] = useState([]);
 
   // Refresh the list of decks
   const refreshDecks = async () => {
-    const decksData = await getDecks();
-    setDecks(decksData);
+    const result = await getDecks();
+    if (result) {
+      const { decks, order } = result;
+      setDecksData(decks);
+
+      // Create array of decks in the saved order
+      const orderedDecks = order
+        .filter(deckName => decks[deckName]) // Filter out any deck names that no longer exist
+        .map(deckName => decks[deckName]);
+
+      setDeckArray(orderedDecks);
+    }
   };
 
   // Initialize the deck list
@@ -23,21 +35,41 @@ const DeckList = ({ navigation }) => {
     navigation.navigate('DeckDetail', { deck, deckId: deck.title });
   };
 
-  if (decks) {
-    const deckArray = Object.keys(decks).map(deckName => decks[deckName]);
+  // Handle reordering of decks
+  const handleReordered = async (fromIndex, toIndex) => {
+    const updatedDeckArray = [...deckArray];
+    const movedItem = updatedDeckArray.splice(fromIndex, 1)[0];
+    updatedDeckArray.splice(toIndex, 0, movedItem);
+    setDeckArray(updatedDeckArray);
 
+    // Save the new order to AsyncStorage
+    const newOrder = updatedDeckArray.map(deck => deck.title);
+    await saveDeckOrder(newOrder);
+  };
+
+  // Render individual deck components
+  const renderDeck = (info) => {
+    const { item, onDragStart, onDragEnd } = info;
+    return (
+      <Deck
+        deck={item}
+        onPress={() => handlePress(item)}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+      />
+    );
+  };
+
+  if (decksData) {
     return (
       <View style={styles.container}>
-        <FlatList
-          contentContainerStyle={styles.listContainer}
+        <DragList
           data={deckArray}
-          renderItem={({ item }) => (
-            <Deck
-              deck={item}
-              onPress={() => handlePress(item)}
-            />
-          )}
           keyExtractor={item => item.title}
+          renderItem={renderDeck}
+          onReordered={handleReordered}
+          contentContainerStyle={styles.listContainer}
+          style={{ flex: 1, width: '100%' }}
         />
       </View>
     );

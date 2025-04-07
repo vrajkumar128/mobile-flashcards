@@ -36,7 +36,7 @@ const TabNavigator = () => {
           },
           headerTintColor: white,
           tabBarIcon: ({ color }) => (
-            <Ionicons name="ios-bookmarks" size={30} color={color} />
+            <Ionicons name="bookmarks" size={30} color={color} />
           )
         }}
       />

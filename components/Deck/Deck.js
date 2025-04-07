@@ -4,8 +4,19 @@ import { determineCardPlurality } from '../../utils/helpers';
 import styles from './styles';
 
 // List deck names and # of cards in a given deck
-const Deck = ({ deck, ...rest }) => {
+const Deck = ({ deck, onDragStart, onDragEnd, ...rest }) => {
   const [isPressed, setIsPressed] = useState(false);
+
+  // Combined handlers to support both visual feedback and drag functionality
+  const handlePressIn = () => {
+    setIsPressed(true);
+    if (onDragStart) onDragStart();
+  };
+
+  const handlePressOut = () => {
+    setIsPressed(false);
+    if (onDragEnd) onDragEnd();
+  };
 
   return (
     <TouchableOpacity
@@ -15,8 +26,8 @@ const Deck = ({ deck, ...rest }) => {
         styles.container,
         isPressed && styles.containerPressed
       ]}
-      onPressIn={() => setIsPressed(true)}
-      onPressOut={() => setIsPressed(false)}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
     >
       <View style={styles.contents}>
         <Text style={[
