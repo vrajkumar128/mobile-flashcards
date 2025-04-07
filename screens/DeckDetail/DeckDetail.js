@@ -5,42 +5,13 @@ import { getDeck, removeDeck } from '../../utils/api';
 import { determineCardPlurality } from '../../utils/helpers';
 import TextButton from '../../components/TextButton/TextButton';
 import { clearLocalNotification, setLocalNotification } from '../../utils/helpers';
+import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 const DeckDetail = ({ route, navigation }) => {
   const [deck, setDeck] = useState(null);
   const { deckId } = route.params;
-
-  // Set screen header to title of deck
-  useLayoutEffect(() => {
-    if (deck) {
-      navigation.setOptions({
-        title: deck.title
-      });
-    }
-  }, [navigation, deck]);
-
-  // Refresh the deck
-  const refreshDeck = useCallback(async () => {
-    const deckData = await getDeck(deckId);
-    setDeck(deckData);
-  }, [deckId]);
-
-  // Initialize the deck's details
-  useEffect(() => {
-    refreshDeck();
-  }, [refreshDeck]);
-
-  // Begin a quiz
-  const runQuiz = () => {
-    clearLocalNotification()
-      .then(setLocalNotification);
-
-    navigation.navigate('Quiz', {
-      deck,
-      questionIndex: 0,
-      numCorrect: 0
-    });
-  };
 
   // Handle deck deletion
   const handleDeleteDeck = () => {
@@ -65,6 +36,46 @@ const DeckDetail = ({ route, navigation }) => {
     );
   };
 
+  // Set screen header to title of deck and add trash icon
+  useLayoutEffect(() => {
+    if (deck) {
+      navigation.setOptions({
+        title: deck.title,
+        headerRight: () => (
+          <TouchableOpacity onPress={handleDeleteDeck} style={{ marginRight: 15 }}>
+            <Ionicons name="trash" size={24} color="white" />
+          </TouchableOpacity>
+        )
+      });
+    }
+  }, [navigation, deck]);
+
+  // Refresh the deck
+  const refreshDeck = useCallback(async () => {
+    const deckData = await getDeck(deckId);
+    setDeck(deckData);
+  }, [deckId]);
+
+  // Refresh deck every time the screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      refreshDeck();
+      return () => { }; // Cleanup function if needed
+    }, [refreshDeck])
+  );
+
+  // Begin a quiz
+  const runQuiz = () => {
+    clearLocalNotification()
+      .then(setLocalNotification);
+
+    navigation.navigate('Quiz', {
+      deck,
+      questionIndex: 0,
+      numCorrect: 0
+    });
+  };
+
   if (deck) {
     return (
       <View style={styles.container}>
@@ -78,18 +89,13 @@ const DeckDetail = ({ route, navigation }) => {
             text="Start a Quiz"
             disabled={deck.questions.length === 0}
             onPress={runQuiz}
+            style={deck.questions.length > 0 ? { backgroundColor: '#4cd964', borderColor: '#4cd964' } : {}}
           />
 
           <View style={styles.groupedContainer}>
             <TextButton
               text="Manage Cards"
               onPress={() => navigation.navigate('QuestionList', { deckId: deck.title })}
-            />
-
-            <TextButton
-              text="Delete Deck"
-              onPress={handleDeleteDeck}
-              style={{ backgroundColor: '#ff3b30', borderColor: '#ff3b30' }}
             />
           </View>
         </View>

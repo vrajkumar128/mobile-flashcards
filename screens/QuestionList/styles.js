@@ -7,6 +7,13 @@ const styles = StyleSheet.create({
     width: '100%'
   },
 
+  addButtonContainer: {
+    alignItems: 'center',
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee'
+  },
+
   listContainer: {
     width: '100%',
     paddingVertical: 15,

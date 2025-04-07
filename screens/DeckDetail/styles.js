@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { gray, black } from '../../utils/colors';
+import { gray, black, white } from '../../utils/colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -30,7 +30,13 @@ const styles = StyleSheet.create({
   caption: {
     fontSize: 24,
     color: gray
-  }
+  },
+
+  enabledButton: {
+    backgroundColor: '#4cd964',
+    borderColor: black,
+    color: white
+  },
 });
 
 export default styles;

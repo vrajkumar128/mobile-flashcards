@@ -2,6 +2,7 @@ import React, { useState, useEffect, useLayoutEffect, useCallback } from 'react'
 import { View, Text, FlatList, Alert, TouchableOpacity } from 'react-native';
 import { getDeck, saveQuestionList } from '../../utils/api';
 import styles from './styles';
+import TextButton from '../../components/TextButton/TextButton';
 
 const QuestionList = ({ route, navigation }) => {
   const [deck, setDeck] = useState(null);
@@ -38,6 +39,11 @@ const QuestionList = ({ route, navigation }) => {
     });
   };
 
+  // Handle adding a new question
+  const handleAddQuestion = () => {
+    navigation.navigate('NewQuestion', { deck });
+  };
+
   // Show confirmation and delete question
   const handleDeleteQuestion = (index) => {
     Alert.alert(
@@ -72,6 +78,14 @@ const QuestionList = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.addButtonContainer}>
+        <TextButton
+          text="Add Question"
+          onPress={handleAddQuestion}
+          style={{ backgroundColor: '#4cd964', borderColor: '#4cd964', width: '90%' }}
+        />
+      </View>
+
       <FlatList
         contentContainerStyle={styles.listContainer}
         data={deck.questions}
