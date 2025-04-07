@@ -69,7 +69,6 @@ const DeckList = ({ navigation }) => {
           renderItem={renderDeck}
           onReordered={handleReordered}
           contentContainerStyle={styles.listContainer}
-          style={{ flex: 1, width: '100%' }}
         />
       </View>
     );

@@ -1,5 +1,13 @@
 import React, { useState, useLayoutEffect } from 'react';
-import { KeyboardAvoidingView, TextInput, Text, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  TextInput,
+  Text,
+  View,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Platform
+} from 'react-native';
 import styles from './styles';
 import { saveDeck } from '../../utils/api';
 import TextButton from '../../components/TextButton/TextButton';
@@ -23,24 +31,32 @@ const NewDeck = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>Deck Title:</Text>
-        <TextInput
-          placeholder="Enter title here"
-          placeholderTextColor="#aaa"
-          value={text}
-          onChangeText={setText}
-          style={styles.inputField}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={100}
+      >
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Deck Title:</Text>
+          <TextInput
+            placeholder="Enter title here"
+            placeholderTextColor="#aaa"
+            value={text}
+            onChangeText={setText}
+            style={styles.inputField}
+            returnKeyType="done"
+            onSubmitEditing={Keyboard.dismiss}
+          />
+        </View>
+        <TextButton
+          disabled={!text}
+          text="Create Deck"
+          onPress={handleSubmit}
+          style={styles.createButton}
         />
-      </View>
-      <TextButton
-        disabled={!text}
-        text="Create Deck"
-        onPress={handleSubmit}
-        style={styles.createButton}
-      />
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
