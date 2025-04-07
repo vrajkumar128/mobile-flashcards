@@ -1,25 +1,57 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
 import { KeyboardAvoidingView, TextInput, Text, View } from 'react-native';
 import styles from './styles';
-import { saveQuestion } from '../../utils/api';
+import { saveQuestion, saveQuestionList } from '../../utils/api';
 import TextButton from '../../components/TextButton/TextButton';
 
 const NewQuestion = ({ route, navigation }) => {
   const [questionText, setQuestionText] = useState('');
   const [answerText, setAnswerText] = useState('');
 
-  const { deck } = route.params;
+  const { deck, editMode, questionIndex, questionText: initialQuestion, answerText: initialAnswer } = route.params || {};
 
-  // Set screen header
+  // Set screen header and initialize fields if in edit mode
   useLayoutEffect(() => {
-    navigation.setOptions({
-      title: `Add Card to ${deck.title}`
-    });
-  }, [navigation, deck]);
+    if (editMode) {
+      navigation.setOptions({
+        title: `Edit Card in ${deck.title}`
+      });
+    } else {
+      navigation.setOptions({
+        title: `Add Card to ${deck.title}`
+      });
+    }
+  }, [navigation, deck, editMode]);
 
-  // Save a new question, clear the input fields, and redirect to the respective DeckDetail
+  // Initialize fields if in edit mode
+  useEffect(() => {
+    if (editMode && initialQuestion && initialAnswer) {
+      setQuestionText(initialQuestion);
+      setAnswerText(initialAnswer);
+    }
+  }, [editMode, initialQuestion, initialAnswer]);
+
+  // Save a new question or update an existing one
   const handleSubmit = async () => {
-    const newDeck = await saveQuestion(deck.title, questionText, answerText);
+    let newDeck;
+
+    if (editMode) {
+      // Update existing question
+      const updatedQuestions = [...deck.questions];
+      
+      updatedQuestions[questionIndex] = {
+        question: questionText,
+        answer: answerText
+      };
+
+      // Save the updated questions list
+      newDeck = await saveQuestionList(deck.title, updatedQuestions);
+    } else {
+      // Save a new question
+      newDeck = await saveQuestion(deck.title, questionText, answerText);
+    }
+
+    // Clear fields and navigate back
     setQuestionText('');
     setAnswerText('');
     navigation.navigate('DeckDetail', { deck: newDeck, deckId: newDeck.title });
@@ -51,7 +83,7 @@ const NewQuestion = ({ route, navigation }) => {
 
       <TextButton
         disabled={!questionText || !answerText}
-        text="Add Card"
+        text={editMode ? "Save Changes" : "Add Card"}
         onPress={handleSubmit}
         style={styles.addButton}
       />

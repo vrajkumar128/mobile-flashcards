@@ -6,13 +6,13 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%'
   },
-  
+
   listContainer: {
     width: '100%',
     paddingVertical: 15,
     paddingHorizontal: 10
   },
-  
+
   questionContainer: {
     backgroundColor: white,
     borderColor: black,
@@ -21,38 +21,55 @@ const styles = StyleSheet.create({
     padding: 15,
     marginBottom: 15
   },
-  
+
   questionText: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 8
   },
-  
+
   answerText: {
     fontSize: 16,
     marginBottom: 15,
     color: gray
   },
-  
+
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
+  },
+
+  editButton: {
+    backgroundColor: '#4cd964',
+    padding: 8,
+    borderRadius: 5,
+    marginRight: 10
+  },
+
   deleteButton: {
     backgroundColor: '#ff3b30',
     padding: 8,
-    borderRadius: 5,
-    alignSelf: 'flex-end'
+    borderRadius: 5
   },
-  
+
+  buttonText: {
+    color: white,
+    fontWeight: 'bold',
+    fontSize: 14
+  },
+
   deleteButtonText: {
     color: white,
     fontWeight: 'bold',
     fontSize: 14
   },
-  
+
   emptyContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 30
   },
-  
+
   emptyText: {
     fontSize: 18,
     color: gray

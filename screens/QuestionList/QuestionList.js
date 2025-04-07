@@ -27,6 +27,17 @@ const QuestionList = ({ route, navigation }) => {
     refreshDeck();
   }, [refreshDeck]);
 
+  // Show edit question dialog
+  const handleEditQuestion = (index) => {
+    navigation.navigate('NewQuestion', {
+      deck,
+      editMode: true,
+      questionIndex: index,
+      questionText: deck.questions[index].question,
+      answerText: deck.questions[index].answer
+    });
+  };
+
   // Show confirmation and delete question
   const handleDeleteQuestion = (index) => {
     Alert.alert(
@@ -41,12 +52,11 @@ const QuestionList = ({ route, navigation }) => {
           text: 'Delete',
           style: 'destructive',
           onPress: async () => {
-            // Create a new array without the deleted question
             const updatedQuestions = deck.questions.filter((_, i) => i !== index);
-            
+
             // Update the deck with the new questions array
             const updatedDeck = { ...deck, questions: updatedQuestions };
-            
+
             // Save to storage and update state
             await saveQuestionList(deckId, updatedQuestions);
             setDeck(updatedDeck);
@@ -69,12 +79,20 @@ const QuestionList = ({ route, navigation }) => {
           <View style={styles.questionContainer}>
             <Text style={styles.questionText}>Q: {item.question}</Text>
             <Text style={styles.answerText}>A: {item.answer}</Text>
-            <TouchableOpacity 
-              style={styles.deleteButton}
-              onPress={() => handleDeleteQuestion(index)}
-            >
-              <Text style={styles.deleteButtonText}>Delete</Text>
-            </TouchableOpacity>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.editButton}
+                onPress={() => handleEditQuestion(index)}
+              >
+                <Text style={styles.buttonText}>Edit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => handleDeleteQuestion(index)}
+              >
+                <Text style={styles.deleteButtonText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
         keyExtractor={(item, index) => `${index}`}
