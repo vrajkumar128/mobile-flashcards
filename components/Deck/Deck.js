@@ -1,21 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { determineCardPlurality } from '../../utils/helpers';
 import styles from './styles';
 
-// List deck names and # of cards in a given deck
-const Deck = ({ deck, onDragStart, onDragEnd, ...rest }) => {
+const Deck = ({ deck, onDragStart, onDragEnd, onPress, ...rest }) => {
   const [isPressed, setIsPressed] = useState(false);
+  const isDragging = useRef(false);
 
   // Combined handlers to support both visual feedback and drag functionality
   const handlePressIn = () => {
     setIsPressed(true);
-    if (onDragStart) onDragStart();
+    if (onDragStart) {
+      isDragging.current = true;
+      onDragStart();
+    }
   };
 
   const handlePressOut = () => {
     setIsPressed(false);
-    if (onDragEnd) onDragEnd();
+    if (onDragEnd && isDragging.current) {
+      onDragEnd();
+    }
+    // Reset the dragging state
+    isDragging.current = false;
+  };
+
+  // Only trigger press event if we're not dragging
+  const handlePress = () => {
+    if (!isDragging.current && onPress) {
+      onPress();
+    }
   };
 
   return (
@@ -28,6 +42,7 @@ const Deck = ({ deck, onDragStart, onDragEnd, ...rest }) => {
       ]}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
+      onPress={handlePress}
     >
       <View style={styles.contents}>
         <Text style={[

@@ -3,7 +3,7 @@ import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { getDeck, saveQuestionList } from '../../utils/api';
 import styles from './styles';
 import TextButton from '../../components/TextButton/TextButton';
-import { showAlert } from '../../utils/alertService'; // Import the new alert service
+import { showAlert } from '../../utils/alertService';
 
 const QuestionList = ({ route, navigation }) => {
   const [deck, setDeck] = useState(null);
