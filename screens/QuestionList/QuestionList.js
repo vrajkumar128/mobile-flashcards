@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useLayoutEffect, useCallback } from 'react';
-import { View, Text, FlatList, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { getDeck, saveQuestionList } from '../../utils/api';
 import styles from './styles';
 import TextButton from '../../components/TextButton/TextButton';
+import { showAlert } from '../../utils/alertService'; // Import the new alert service
 
 const QuestionList = ({ route, navigation }) => {
   const [deck, setDeck] = useState(null);
@@ -46,7 +47,7 @@ const QuestionList = ({ route, navigation }) => {
 
   // Show confirmation and delete question
   const handleDeleteQuestion = (index) => {
-    Alert.alert(
+    showAlert(
       'Delete Question',
       'Are you sure you want to delete this question?',
       [

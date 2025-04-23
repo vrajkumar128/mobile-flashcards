@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect, useCallback } from 'react';
-import { View, Text, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import styles from './styles';
 import { getDeck, removeDeck } from '../../utils/api';
 import { determineCardPlurality } from '../../utils/helpers';
@@ -7,6 +7,7 @@ import TextButton from '../../components/TextButton/TextButton';
 import { clearLocalNotification, setLocalNotification } from '../../utils/helpers';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
+import { showAlert } from '../../utils/alertService'; // Import the new alert service
 
 const DeckDetail = ({ route, navigation }) => {
   const [deck, setDeck] = useState(null);
@@ -18,11 +19,11 @@ const DeckDetail = ({ route, navigation }) => {
     setDeck(deckData);
   }, [deckId]);
 
-  // Handle deck deletion - using useCallback
+  // Handle deck deletion
   const handleDeleteDeck = useCallback(() => {
     if (!deck) return;
 
-    Alert.alert(
+    showAlert(
       'Delete Deck',
       `Are you sure you want to delete the "${deck.title}" deck?`,
       [
@@ -38,8 +39,7 @@ const DeckDetail = ({ route, navigation }) => {
             navigation.navigate('Home');
           }
         }
-      ],
-      { cancelable: true }
+      ]
     );
   }, [deck, navigation]);
 
