@@ -111,12 +111,14 @@ const DeckList = ({ navigation }) => {
           onDragEnd={handleReordered}
           onDragStart={handleDragStart}
           onDragComplete={handleDragEnd}
-          renderItem={(item, index, isDragging) => (
-            <Deck
-              deck={item}
-              onPress={() => handlePress(item)}
-              disabled={isDragging || isDraggingActive}
-            />
+          renderItem={(item, index, isDragging, gesture) => (
+            <GestureDetector gesture={gesture}>
+              <Deck
+                deck={item}
+                onPress={() => handlePress(item)}
+                disabled={isDragging || isDraggingActive}
+              />
+            </GestureDetector>
           )}
         />
 
@@ -330,13 +332,11 @@ const DraggableItem = ({
   });
 
   return (
-    <GestureDetector gesture={panGesture}>
-      <Animated.View style={animatedPosition}>
-        <Animated.View style={[{ height: itemHeight }, animatedItemStyle]}>
-          {renderItem(item, index, isDragging)}
-        </Animated.View>
+    <Animated.View style={animatedPosition}>
+      <Animated.View style={[{ height: itemHeight }, animatedItemStyle]}>
+        {renderItem(item, index, isDragging, panGesture)}
       </Animated.View>
-    </GestureDetector>
+    </Animated.View>
   );
 };
 
