@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, TouchableOpacity, ScrollView } from 'react-native';
+import { View, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import { getDecks, saveDeckOrder } from '../../utils/api';
 import Deck from '../../components/Deck/Deck';
 import styles from './styles';
@@ -106,7 +106,10 @@ const DeckList = ({ navigation }) => {
     <GestureHandlerRootView style={styles.container}>
       <View style={styles.container}>
         <ScrollView
-          contentContainerStyle={styles.listContainer}
+          contentContainerStyle={[
+            styles.listContainer,
+            Platform.OS === 'ios' ? { minHeight: deckArray.length * DECK_HEIGHT + 20 } : {}
+          ]}
           showsVerticalScrollIndicator={true}
         >
           <DraggableList
