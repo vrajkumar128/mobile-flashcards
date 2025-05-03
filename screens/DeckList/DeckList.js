@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, ScrollView } from 'react-native';
 import { getDecks, saveDeckOrder } from '../../utils/api';
 import Deck from '../../components/Deck/Deck';
 import styles from './styles';
@@ -105,22 +105,27 @@ const DeckList = ({ navigation }) => {
   return (
     <GestureHandlerRootView style={styles.container}>
       <View style={styles.container}>
-        <DraggableList
-          data={deckArray}
-          itemHeight={DECK_HEIGHT}
-          onDragEnd={handleReordered}
-          onDragStart={handleDragStart}
-          onDragComplete={handleDragEnd}
-          renderItem={(item, index, isDragging, gesture) => (
-            <GestureDetector gesture={gesture}>
-              <Deck
-                deck={item}
-                onPress={() => handlePress(item)}
-                disabled={isDragging || isDraggingActive}
-              />
-            </GestureDetector>
-          )}
-        />
+        <ScrollView
+          contentContainerStyle={styles.listContainer}
+          showsVerticalScrollIndicator={true}
+        >
+          <DraggableList
+            data={deckArray}
+            itemHeight={DECK_HEIGHT}
+            onDragEnd={handleReordered}
+            onDragStart={handleDragStart}
+            onDragComplete={handleDragEnd}
+            renderItem={(item, index, isDragging, gesture) => (
+              <GestureDetector gesture={gesture}>
+                <Deck
+                  deck={item}
+                  onPress={() => handlePress(item)}
+                  disabled={isDragging || isDraggingActive}
+                />
+              </GestureDetector>
+            )}
+          />
+        </ScrollView>
 
         <TouchableOpacity
           style={styles.fab}
