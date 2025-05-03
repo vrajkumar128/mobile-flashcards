@@ -156,7 +156,7 @@ const DraggableList = ({
   // Update positions when data changes
   useEffect(() => {
     itemPositions.value = data.map((_, index) => index * itemHeight);
-  }, [data, itemHeight]);
+  }, [data, itemHeight, itemPositions]);
 
   // Handle drag completion and reordering
   const handleDragEnd = (from, to) => {
