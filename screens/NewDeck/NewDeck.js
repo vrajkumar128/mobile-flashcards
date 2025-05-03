@@ -26,7 +26,6 @@ const NewDeck = ({ navigation }) => {
   // Focus input on mount in web environment
   useEffect(() => {
     if (Platform.OS === 'web' && inputRef) {
-      // Add a slight delay to ensure rendering is complete
       setTimeout(() => {
         try {
           inputRef.focus();
@@ -37,12 +36,14 @@ const NewDeck = ({ navigation }) => {
     }
   }, [inputRef]);
 
-  // Create a new deck, clear the input field, and redirect to DeckDetail
+  // Create a new deck, clear the input field, and redirect to DeckList
   const handleSubmit = async () => {
     const savedDeck = await saveDeck(text);
     const newDeck = savedDeck[text];
     setText('');
-    navigation.navigate('DeckDetail', { deck: newDeck, deckId: newDeck.title });
+
+    // Navigate back to the DeckList screen
+    navigation.navigate('Decks');
   };
 
   // Conditionally apply TouchableWithoutFeedback
@@ -75,8 +76,6 @@ const NewDeck = ({ navigation }) => {
     </KeyboardAvoidingView>
   );
 
-  // On native platforms, use TouchableWithoutFeedback to dismiss keyboard
-  // On web, render content directly
   if (Platform.OS === 'web') {
     return Content;
   } else {

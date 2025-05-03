@@ -1,7 +1,8 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import DeckList from '../screens/DeckList/DeckList';
 import DeckDetail from '../screens/DeckDetail/DeckDetail';
-import TabNavigator from './TabNavigator';
+import NewDeck from '../screens/NewDeck/NewDeck';
 import NewQuestion from '../screens/NewQuestion/NewQuestion';
 import Quiz from '../screens/Quiz/Quiz';
 import Score from '../screens/Score/Score';
@@ -14,9 +15,25 @@ const MainNavigator = () => {
     return (
         <Stack.Navigator>
             <Stack.Screen
-                name="Home"
-                component={TabNavigator}
-                options={{ headerShown: false }}
+                name="Decks"
+                component={DeckList}
+                options={{
+                    headerTintColor: white,
+                    headerStyle: {
+                        backgroundColor: darkBlue,
+                    }
+                }}
+            />
+            <Stack.Screen
+                name="NewDeck"
+                component={NewDeck}
+                options={{
+                    title: 'New Deck',
+                    headerTintColor: white,
+                    headerStyle: {
+                        backgroundColor: darkBlue,
+                    }
+                }}
             />
             <Stack.Screen
                 name="DeckDetail"

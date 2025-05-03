@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import { getDecks, saveDeckOrder } from '../../utils/api';
 import Deck from '../../components/Deck/Deck';
 import styles from './styles';
@@ -11,6 +11,7 @@ import Animated, {
   runOnJS
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
+import { FontAwesome } from '@expo/vector-icons';
 
 const DECK_HEIGHT = 100;
 
@@ -69,7 +70,7 @@ const DeckList = ({ navigation }) => {
 
   // Display details for an individual deck when that deck is pressed
   const handlePress = (deck) => {
-    if (!isDraggingActive) { // Only navigate if we're not in dragging mode
+    if (!isDraggingActive) {
       navigation.navigate('DeckDetail', { deck, deckId: deck.title });
     }
   };
@@ -78,15 +79,27 @@ const DeckList = ({ navigation }) => {
     setIsDraggingActive(true);
   };
 
-  // Use a small timeout to prevent drop events from being interpreted as press events
   const handleDragEnd = () => {
     setTimeout(() => {
       setIsDraggingActive(false);
     }, 100);
   };
 
+  const handleAddDeck = () => {
+    navigation.navigate('NewDeck');
+  };
+
   if (!decksData || deckArray.length === 0) {
-    return null;
+    return (
+      <View style={styles.container}>
+        <TouchableOpacity
+          style={styles.fab}
+          onPress={handleAddDeck}
+        >
+          <FontAwesome name="plus" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   return (
@@ -106,6 +119,13 @@ const DeckList = ({ navigation }) => {
             />
           )}
         />
+
+        <TouchableOpacity
+          style={styles.fab}
+          onPress={handleAddDeck}
+        >
+          <FontAwesome name="plus" size={24} color="white" />
+        </TouchableOpacity>
       </View>
     </GestureHandlerRootView>
   );
@@ -189,8 +209,7 @@ const DraggableItem = ({
       runOnJS(setIsDragging)(isActive);
     }
 
-    // Starting position based on index
-    const basePosition = index * itemHeight;
+    const basePosition = index * itemHeight; // Starting position based on index
 
     // If this is the active item, it follows the finger
     if (isActive) {
@@ -212,7 +231,7 @@ const DraggableItem = ({
 
       // Move items out of the way
       if (activeItemIndex.value !== -1) {
-        // If dragging down and current item is between target and original position
+        // If dragging down and current item is between original position and target
         if (index > activeItemIndex.value && index <= targetSlot) {
           // Move up to make room
           return {
@@ -275,7 +294,7 @@ const DraggableItem = ({
         duration: 250
       });
 
-      // Notify parent of reordering
+      // Notify parent of any reordering
       if (targetIndex !== index) {
         runOnJS(onDragEnd)(index, targetIndex);
       } else {
