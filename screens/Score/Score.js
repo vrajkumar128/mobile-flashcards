@@ -31,8 +31,8 @@ const Score = ({ route, navigation }) => {
             })}
           />
           <TextButton
-            text="Back to Deck"
-            onPress={() => navigation.navigate('DeckDetail', {
+            text="Home"
+            onPress={() => navigation.navigate('Decks', {
               deck,
               deckId: deck.title
             })}

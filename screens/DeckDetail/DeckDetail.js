@@ -19,6 +19,28 @@ const DeckDetail = ({ route, navigation }) => {
     setDeck(deckData);
   }, [deckId]);
 
+  // Refresh deck every time the screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      refreshDeck();
+      return () => { };
+    }, [refreshDeck])
+    );
+
+  // Set screen header to title of deck and add trash icon
+  useLayoutEffect(() => {
+    if (deck) {
+      navigation.setOptions({
+        title: deck.title,
+        headerRight: () => (
+          <TouchableOpacity onPress={handleDeleteDeck} style={{ marginRight: 15 }}>
+            <Ionicons name="trash" size={24} color="white" />
+          </TouchableOpacity>
+        )
+      });
+    }
+  }, [navigation, deck, handleDeleteDeck]);
+
   // Handle deck deletion
   const handleDeleteDeck = useCallback(() => {
     if (!deck) return;
@@ -41,28 +63,6 @@ const DeckDetail = ({ route, navigation }) => {
       ]
     );
   }, [deck, navigation]);
-
-  // Set screen header to title of deck and add trash icon
-  useLayoutEffect(() => {
-    if (deck) {
-      navigation.setOptions({
-        title: deck.title,
-        headerRight: () => (
-          <TouchableOpacity onPress={handleDeleteDeck} style={{ marginRight: 15 }}>
-            <Ionicons name="trash" size={24} color="white" />
-          </TouchableOpacity>
-        )
-      });
-    }
-  }, [navigation, deck, handleDeleteDeck]);
-
-  // Refresh deck every time the screen comes into focus
-  useFocusEffect(
-    useCallback(() => {
-      refreshDeck();
-      return () => { };
-    }, [refreshDeck])
-  );
 
   // Begin a quiz
   const runQuiz = () => {
