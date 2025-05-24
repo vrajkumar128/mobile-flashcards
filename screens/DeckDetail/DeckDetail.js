@@ -24,8 +24,7 @@ const DeckDetail = ({ route, navigation }) => {
     if (!deck) return;
 
     showAlert(
-      'Delete Deck',
-      `Are you sure you want to delete the "${deck.title}" deck?`,
+      `Are you sure you want to delete the deck "${deck.title}"? This action cannot be undone.`,
       [
         {
           text: 'Cancel',
@@ -36,7 +35,7 @@ const DeckDetail = ({ route, navigation }) => {
           style: 'destructive',
           onPress: async () => {
             await removeDeck(deck.title);
-            navigation.navigate('Home');
+            navigation.navigate('Decks');
           }
         }
       ]
