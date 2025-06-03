@@ -11,6 +11,7 @@ const Quiz = ({ route, navigation }) => {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [randomizedQuestions, setRandomizedQuestions] = useState([]);
   const [currentDeck, setCurrentDeck] = useState(null);
+  const [missedQuestions, setMissedQuestions] = useState([]);
   const { deck } = route.params;
   const deckId = deck.title;
 
@@ -33,6 +34,24 @@ const Quiz = ({ route, navigation }) => {
   // Fetch the latest deck data when component mounts
   useEffect(() => {
     const fetchLatestDeck = async () => {
+      if (route.params.randomizedQuestions && route.params.randomizedQuestions.length > 0) {
+        setCurrentDeck(deck);
+        setRandomizedQuestions(route.params.randomizedQuestions);
+        setQuestionIndex(route.params.questionIndex || 0);
+        setNumCorrect(route.params.numCorrect || 0);
+        setMissedQuestions(route.params.missedQuestions || []);
+
+        // Check if this is the last question
+        if ((route.params.questionIndex || 0) + 1 === route.params.randomizedQuestions.length) {
+          setIsLastQuestion(true);
+        } else {
+          setIsLastQuestion(false);
+        }
+
+        return;
+      }
+
+      // Normal quiz initialization
       const latestDeck = await getDeck(deckId);
       setCurrentDeck(latestDeck);
 
@@ -40,10 +59,12 @@ const Quiz = ({ route, navigation }) => {
       if (latestDeck) {
         const initialQuestionIndex = route.params.questionIndex || 0;
         const initialNumCorrect = route.params.numCorrect || 0;
+        const initialMissedQuestions = route.params.missedQuestions || [];
 
         setShowAns(false);
         setQuestionIndex(initialQuestionIndex);
         setNumCorrect(initialNumCorrect);
+        setMissedQuestions(initialMissedQuestions);
 
         // Get randomized questions from route params or create a new shuffled array
         if (initialQuestionIndex === 0 && !route.params.randomizedQuestions) {
@@ -65,7 +86,7 @@ const Quiz = ({ route, navigation }) => {
     };
 
     fetchLatestDeck();
-  }, [deckId, route.params.questionIndex, route.params.numCorrect, route.params.randomizedQuestions]);
+  }, [deckId, route.params]);
 
   // Set screen header
   useLayoutEffect(() => {
@@ -94,19 +115,26 @@ const Quiz = ({ route, navigation }) => {
   const nextQuestion = (additionalCorrect = 0) => {
     const updatedCorrect = numCorrect + additionalCorrect;
 
+    // If the answer was incorrect, add this question to missedQuestions
+    const updatedMissedQuestions = [...missedQuestions];
+    if (additionalCorrect === 0) {
+      updatedMissedQuestions.push(randomizedQuestions[questionIndex]);
+    }
+
+    // Determine whether to go to the next question or to the score screen
     if (questionIndex + 1 === randomizedQuestions.length) {
-      // If this was the last question, go to the score screen
       navigation.navigate('Score', {
         deck: currentDeck,
-        numCorrect: updatedCorrect
+        numCorrect: updatedCorrect,
+        missedQuestions: updatedMissedQuestions
       });
     } else {
-      // Otherwise go to the next question
       navigation.navigate('Quiz', {
         deck: currentDeck,
         questionIndex: questionIndex + 1,
         numCorrect: updatedCorrect,
-        randomizedQuestions: randomizedQuestions
+        randomizedQuestions: randomizedQuestions,
+        missedQuestions: updatedMissedQuestions
       });
     }
   };

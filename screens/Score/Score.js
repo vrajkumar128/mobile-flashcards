@@ -5,7 +5,8 @@ import { determineCardPlurality } from '../../utils/helpers';
 import TextButton from '../../components/TextButton/TextButton';
 
 const Score = ({ route, navigation }) => {
-  const { deck, numCorrect } = route.params;
+  const { deck, numCorrect, missedQuestions = [] } = route.params;
+  const numMissed = deck.questions.length - numCorrect;
 
   // Set screen header
   useLayoutEffect(() => {
@@ -13,6 +14,18 @@ const Score = ({ route, navigation }) => {
       title: `${deck.title} Quiz Score`
     });
   }, [navigation, deck]);
+
+  // Handle retry for missed cards
+  const handleRetryMissed = () => {
+    if (missedQuestions.length > 0) {
+      navigation.navigate('Quiz', {
+        deck: { ...deck, questions: missedQuestions },
+        questionIndex: 0,
+        numCorrect: 0,
+        randomizedQuestions: missedQuestions
+      });
+    }
+  };
 
   if (deck) {
     return (
@@ -22,16 +35,16 @@ const Score = ({ route, navigation }) => {
           <Text style={styles.caption}>{`You got ${numCorrect} / ${deck.questions.length} ${determineCardPlurality(deck)} correct!`}</Text>
         </View>
         <View style={styles.subcontainer}>
+          {numMissed > 0 && (
+            <TextButton
+              text={`Retry Missed Cards (${numMissed})`}
+              onPress={handleRetryMissed}
+              style={styles.retryButton}
+            />
+          )}
+
           <TextButton
-            text="Restart Quiz"
-            onPress={() => navigation.navigate('Quiz', {
-              deck,
-              questionIndex: 0,
-              numCorrect: 0
-            })}
-          />
-          <TextButton
-            text="Home"
+            text="Back to Decks"
             onPress={() => navigation.navigate('Decks', {
               deck,
               deckId: deck.title
