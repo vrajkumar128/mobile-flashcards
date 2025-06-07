@@ -1,34 +1,33 @@
 {
-    "name": "mobile-flashcards",
-    "version": "0.1.0",
-    "private": true,
-    "dependencies": {
-        "@expo/vector-icons": "^14.0.2",
-        "@react-native-async-storage/async-storage": "2.1.2",
-        "@react-navigation/native": "^6.1.9",
-        "@react-navigation/stack": "^6.3.20",
-        "expo": "~53.0.0",
-        "expo-constants": "~17.1.5",
-        "expo-device": "~7.1.4",
-        "expo-notifications": "~0.31.1",
-        "expo-status-bar": "~2.2.3",
-        "mobile-flashcards": "file:",
-        "react": "19.0.0",
-        "react-dom": "19.0.0",
-        "react-native": "0.79.2",
-        "react-native-draglist": "^3.9.5",
-        "react-native-gesture-handler": "~2.24.0",
-        "react-native-reanimated": "~3.17.4",
-        "react-native-safe-area-context": "5.4.0",
-        "react-native-screens": "~4.10.0"
-    },
-    "devDependencies": {
-        "@babel/core": "^7.23.5"
-    },
-    "scripts": {
-        "start": "expo start",
-        "android": "expo start --android",
-        "ios": "expo start --ios",
-        "web": "expo start --web"
-    }
+  "name": "mobile-flashcards",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@expo/vector-icons": "^14.0.2",
+    "@react-native-async-storage/async-storage": "2.1.2",
+    "@react-navigation/native": "^6.1.9",
+    "@react-navigation/stack": "^6.3.20",
+    "expo": "~53.0.0",
+    "expo-constants": "~17.1.5",
+    "expo-device": "~7.1.4",
+    "expo-notifications": "~0.31.1",
+    "expo-status-bar": "~2.2.3",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-native": "~0.79.2",
+    "react-native-gesture-handler": "~2.24.0",
+    "react-native-reanimated": "~3.17.4",
+    "react-native-safe-area-context": "5.4.0",
+    "react-native-screens": "~4.10.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.5",
+    "@types/react": "~19.0.10"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  }
 }

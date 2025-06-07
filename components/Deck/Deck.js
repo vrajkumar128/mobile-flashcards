@@ -3,57 +3,75 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { determineCardPlurality } from '../../utils/helpers';
 import styles from './styles';
 
-const Deck = ({ deck, onDragStart, onDragEnd, onPress, ...rest }) => {
+const Deck = ({
+  deck,
+  onPress,
+  onLongPress,
+  disabled = false,
+  style,
+  ...rest
+}) => {
   const [isPressed, setIsPressed] = useState(false);
-  const isDragging = useRef(false);
+  const longPressTriggered = useRef(false);
 
-  // Combined handlers to support both visual feedback and drag functionality
   const handlePressIn = () => {
-    setIsPressed(true);
-    if (onDragStart) {
-      isDragging.current = true;
-      onDragStart();
+    if (!disabled) {
+      setIsPressed(true);
+      longPressTriggered.current = false;
     }
   };
 
   const handlePressOut = () => {
     setIsPressed(false);
-    if (onDragEnd && isDragging.current) {
-      onDragEnd();
-    }
-    // Reset the dragging state
-    isDragging.current = false;
+    // Reset the long press flag after a short delay
+    setTimeout(() => {
+      longPressTriggered.current = false;
+    }, 100);
   };
 
-  // Only trigger press event if we're not dragging
   const handlePress = () => {
-    if (!isDragging.current && onPress) {
+    // Only trigger press if we're not disabled and long press wasn't triggered
+    if (!disabled && onPress && !longPressTriggered.current) {
       onPress();
+    }
+  };
+
+  const handleLongPress = () => {
+    if (!disabled && onLongPress) {
+      longPressTriggered.current = true;
+      onLongPress();
     }
   };
 
   return (
     <TouchableOpacity
-      key={deck.title}
       {...rest}
       style={[
         styles.container,
-        isPressed && styles.containerPressed
+        isPressed && !disabled && styles.containerPressed,
+        disabled && styles.containerDisabled,
+        style
       ]}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       onPress={handlePress}
+      onLongPress={handleLongPress}
+      disabled={disabled}
+      delayLongPress={200}
+      activeOpacity={disabled ? 1 : 0.7}
     >
       <View style={styles.contents}>
         <Text style={[
           styles.title,
-          isPressed && styles.textPressed
+          isPressed && !disabled && styles.textPressed,
+          disabled && styles.textDisabled
         ]}>
           {deck.title}
         </Text>
         <Text style={[
           styles.text,
-          isPressed && styles.textPressed
+          isPressed && !disabled && styles.textPressed,
+          disabled && styles.textDisabled
         ]}>
           {deck.questions.length} {determineCardPlurality(deck)}
         </Text>
