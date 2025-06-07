@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { white, black, blue, darkBlue } from '../../utils/colors';
+import { white, black, blue, darkBlue, gray } from '../../utils/colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -18,6 +18,10 @@ const styles = StyleSheet.create({
     backgroundColor: darkBlue,
     borderColor: white
   },
+  containerDisabled: {
+    opacity: 0.8,
+    backgroundColor: '#f5f5f5'
+  },
   contents: {
     alignItems: 'center',
     width: '100%',
@@ -32,6 +36,9 @@ const styles = StyleSheet.create({
   },
   textPressed: {
     color: white
+  },
+  textDisabled: {
+    color: gray
   }
 });
 
