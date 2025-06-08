@@ -94,8 +94,8 @@ const DeckDetail = ({ route, navigation }) => {
 
           <View style={styles.groupedContainer}>
             <TextButton
-              text="Manage Cards"
-              onPress={() => navigation.navigate('QuestionList', { deckId: deck.title })}
+              text="Edit Deck"
+              onPress={() => navigation.navigate('EditDeck', { deckId: deck.title })}
             />
           </View>
         </View>

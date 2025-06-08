@@ -6,84 +6,61 @@ import NewDeck from '../screens/NewDeck/NewDeck';
 import NewQuestion from '../screens/NewQuestion/NewQuestion';
 import Quiz from '../screens/Quiz/Quiz';
 import Score from '../screens/Score/Score';
-import QuestionList from '../screens/QuestionList/QuestionList';
+import EditDeck from '../screens/EditDeck/EditDeck';
 import { white, darkBlue } from '../utils/colors';
+import { Ionicons } from '@expo/vector-icons';
 
 const Stack = createStackNavigator();
 
 const MainNavigator = () => {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+            screenOptions={{
+                headerTintColor: white,
+                headerStyle: {
+                    backgroundColor: darkBlue,
+                },
+                headerBackTitleVisible: false,
+                headerBackImage: () => (
+                    <Ionicons
+                        name="arrow-back"
+                        size={24}
+                        color={white}
+                        style={{ marginLeft: 15 }}
+                    />
+                ),
+            }}
+        >
             <Stack.Screen
                 name="Decks"
                 component={DeckList}
-                options={{
-                    headerTintColor: white,
-                    headerStyle: {
-                        backgroundColor: darkBlue,
-                    }
-                }}
             />
             <Stack.Screen
                 name="NewDeck"
                 component={NewDeck}
                 options={{
                     title: 'New Deck',
-                    headerTintColor: white,
-                    headerStyle: {
-                        backgroundColor: darkBlue,
-                    }
                 }}
             />
             <Stack.Screen
                 name="DeckDetail"
                 component={DeckDetail}
-                options={{
-                    headerTintColor: white,
-                    headerStyle: {
-                        backgroundColor: darkBlue,
-                    }
-                }}
             />
             <Stack.Screen
                 name="NewQuestion"
                 component={NewQuestion}
-                options={{
-                    headerTintColor: white,
-                    headerStyle: {
-                        backgroundColor: darkBlue,
-                    }
-                }}
             />
             <Stack.Screen
                 name="Quiz"
                 component={Quiz}
-                options={{
-                    headerTintColor: white,
-                    headerStyle: {
-                        backgroundColor: darkBlue,
-                    }
-                }}
             />
             <Stack.Screen
                 name="Score"
                 component={Score}
-                options={{
-                    headerTintColor: white,
-                    headerStyle: {
-                        backgroundColor: darkBlue,
-                    }
-                }}
             />
             <Stack.Screen
-                name="QuestionList"
-                component={QuestionList}
-                options={{
-                    headerTintColor: white,
-                    headerStyle: {
-                        backgroundColor: darkBlue,
-                    }
-                }}
+                name="EditDeck"
+                component={EditDeck}
             />
         </Stack.Navigator>
     );

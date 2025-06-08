@@ -7,6 +7,45 @@ const styles = StyleSheet.create({
     width: '100%'
   },
 
+  headerContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    position: 'relative',
+  },
+
+  titleGroup: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+
+  headerTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: white,
+    textAlign: 'center',
+  },
+
+  pencilIcon: {
+    position: 'absolute',
+    left: '100%',
+    marginLeft: 8,
+    padding: 4,
+  },
+
+  headerEditingInput: {
+    color: white,
+    fontSize: 17,
+    fontWeight: '600',
+    borderBottomWidth: 1,
+    borderBottomColor: white,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    minWidth: 150,
+    textAlign: 'center',
+  },
+
   addButtonContainer: {
     alignItems: 'center',
     paddingVertical: 15,

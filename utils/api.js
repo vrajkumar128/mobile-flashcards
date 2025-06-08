@@ -139,3 +139,44 @@ export const saveQuestionList = async (deckName, questions) => {
     alert('There was an error updating the questions. Please try again.');
   }
 };
+
+// Update deck name
+export const updateDeckName = async (oldName, newName) => {
+  try {
+    const { decks, order } = await getDecks();
+
+    // Check if old deck exists
+    if (!decks[oldName]) {
+      throw new Error('Deck not found');
+    }
+
+    // Check if new name already exists (and it's different from old name)
+    if (decks[newName] && newName !== oldName) {
+      throw new Error('A deck with this name already exists');
+    }
+
+    // If the name hasn't changed, just return the existing deck
+    if (oldName === newName) {
+      return decks[oldName];
+    }
+
+    // Simply update the title property in-place
+    decks[oldName].title = newName;
+
+    // Update the key in the decks object
+    decks[newName] = decks[oldName];
+    delete decks[oldName];
+
+    // Update order array
+    const updatedOrder = order.map(name => name === oldName ? newName : name);
+
+    // Save to storage
+    await AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(decks));
+    await AsyncStorage.setItem(DECKS_ORDER_KEY, JSON.stringify(updatedOrder));
+
+    return decks[newName];
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};

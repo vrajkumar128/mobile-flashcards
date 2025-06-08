@@ -1,22 +1,120 @@
 import React, { useState, useEffect, useLayoutEffect, useCallback } from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
-import { getDeck, saveQuestionList } from '../../utils/api';
+import { View, Text, FlatList, TouchableOpacity, TextInput, Alert, Platform, BackHandler } from 'react-native';
+import { getDeck, saveQuestionList, updateDeckName } from '../../utils/api';
 import styles from './styles';
 import TextButton from '../../components/TextButton/TextButton';
 import { showAlert } from '../../utils/alertService';
+import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 
-const QuestionList = ({ route, navigation }) => {
+const EditDeck = ({ route, navigation }) => {
   const [deck, setDeck] = useState(null);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editingName, setEditingName] = useState('');
   const { deckId } = route.params;
 
-  // Set screen header to title of deck
+  // Handle editing deck name
+  const handleEditDeckName = () => {
+    if (Platform.OS === 'ios') {
+      Alert.prompt(
+        'Edit Deck Name',
+        `Enter a new name for "${deck.title}":`,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Update',
+            onPress: (newName) => {
+              if (newName && newName.trim() && newName.trim() !== deck.title) {
+                updateDeckNameHandler(newName.trim());
+              }
+            }
+          }
+        ],
+        'plain-text',
+        deck.title
+      );
+    } else {
+      setEditingName(deck.title);
+      setIsEditingName(true);
+    }
+  };
+
+  // Handle inline name editing
+  const handleSaveName = () => {
+    if (editingName.trim() && editingName.trim() !== deck.title) {
+      updateDeckNameHandler(editingName.trim());
+    }
+    setIsEditingName(false);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditingName(false);
+    setEditingName('');
+  };
+
+  // Update deck name handler
+  const updateDeckNameHandler = async (newName) => {
+    try {
+      const updatedDeck = await updateDeckName(deck.title, newName);
+      if (updatedDeck) {
+        setDeck(updatedDeck);
+        navigation.navigate('DeckDetail', {
+          deck: updatedDeck,
+          deckId: updatedDeck.title
+        });
+      }
+    } catch (error) {
+      showAlert(
+        'Error',
+        'Failed to update deck name. Please try again.',
+        [{ text: 'OK' }]
+      );
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        if (isEditingName) {
+          handleCancelEdit();
+          return true; // Prevent default back behavior
+        }
+        return false; // Allow default back behavior
+      };
+
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => subscription.remove();
+    }, [isEditingName])
+  );
+
   useLayoutEffect(() => {
     if (deck) {
       navigation.setOptions({
-        title: `${deck.title} Questions`
+        headerTitle: () => (
+          <View style={styles.headerContainer}>
+            {isEditingName ? (
+              <TextInput
+                style={styles.headerEditingInput}
+                value={editingName}
+                onChangeText={setEditingName}
+                onSubmitEditing={handleSaveName}
+                onBlur={handleCancelEdit}
+                autoFocus
+                returnKeyType="done"
+              />
+            ) : (
+              <View style={styles.titleGroup}>
+                <Text style={styles.headerTitle}>{deck.title}</Text>
+                <TouchableOpacity onPress={handleEditDeckName} style={styles.pencilIcon}>
+                  <Ionicons name="pencil" size={16} color="white" />
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        )
       });
     }
-  }, [navigation, deck]);
+  }, [navigation, deck, isEditingName, editingName, handleEditDeckName]);
 
   // Refresh the deck
   const refreshDeck = useCallback(async () => {
@@ -121,4 +219,4 @@ const QuestionList = ({ route, navigation }) => {
   );
 };
 
-export default QuestionList;
+export default EditDeck;
