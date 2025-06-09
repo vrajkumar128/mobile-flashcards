@@ -1,70 +1,36 @@
 import React, { useState, useEffect, useLayoutEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text } from 'react-native';
 import styles from './styles';
-import { getDeck, removeDeck } from '../../utils/api';
+import { getDeck } from '../../utils/api';
 import { determineCardPlurality } from '../../utils/helpers';
 import TextButton from '../../components/TextButton/TextButton';
 import { clearLocalNotification, setLocalNotification } from '../../utils/helpers';
-import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
-import { showAlert } from '../../utils/alertService'; // Import the new alert service
 
 const DeckDetail = ({ route, navigation }) => {
   const [deck, setDeck] = useState(null);
   const { deckId } = route.params;
 
-  // Refresh the deck
   const refreshDeck = useCallback(async () => {
     const deckData = await getDeck(deckId);
     setDeck(deckData);
   }, [deckId]);
 
-  // Refresh deck every time the screen comes into focus
   useFocusEffect(
     useCallback(() => {
       refreshDeck();
       return () => { };
     }, [refreshDeck])
-    );
+  );
 
-  // Set screen header to title of deck and add trash icon
   useLayoutEffect(() => {
     if (deck) {
       navigation.setOptions({
-        title: deck.title,
-        headerRight: () => (
-          <TouchableOpacity onPress={handleDeleteDeck} style={{ marginRight: 15 }}>
-            <Ionicons name="trash" size={24} color="white" />
-          </TouchableOpacity>
-        )
+        title: deck.title
       });
     }
-  }, [navigation, deck, handleDeleteDeck]);
+  }, [navigation, deck]);
 
-  // Handle deck deletion
-  const handleDeleteDeck = useCallback(() => {
-    if (!deck) return;
-
-    showAlert(
-      `Are you sure you want to delete the deck "${deck.title}"? This action cannot be undone.`,
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel'
-        },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            await removeDeck(deck.title);
-            navigation.navigate('Decks');
-          }
-        }
-      ]
-    );
-  }, [deck, navigation]);
-
-  // Begin a quiz
   const runQuiz = () => {
     clearLocalNotification()
       .then(setLocalNotification);
