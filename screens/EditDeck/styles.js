@@ -174,8 +174,8 @@ const styles = StyleSheet.create({
   },
 
   addQuestionButton: {
-    backgroundColor: '#4cd964',
-    borderColor: '#4cd964',
+    backgroundColor: darkBlue,
+    borderColor: darkBlue,
     borderWidth: 1,
     borderRadius: 5,
     padding: 10,
@@ -186,7 +186,8 @@ const styles = StyleSheet.create({
 
   addQuestionButtonText: {
     fontSize: 18,
-    color: white
+    color: white,
+    fontWeight: 'bold'
   }
 });
 
