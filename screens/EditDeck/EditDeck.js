@@ -188,7 +188,7 @@ const EditDeck = ({ route, navigation }) => {
   const handleDeleteDeck = () => {
     showAlert(
       'Delete Deck',
-      `Are you sure you want to delete the deck "${deck.title}"?`,
+      `Are you sure you want to delete the deck "${deck.title}"? This action cannot be undone.`,
       [
         {
           text: 'Cancel',
@@ -212,38 +212,36 @@ const EditDeck = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.topContainer}>
-        <View style={styles.addButtonContainer}>
-          <TextButton
-            text="Add Question"
-            onPress={handleAddQuestion}
-            style={{ backgroundColor: '#4cd964', borderColor: '#4cd964', width: '90%' }}
-          />
-        </View>
+      <View style={styles.addButtonContainer}>
+        <TextButton
+          text="Add Question"
+          onPress={handleAddQuestion}
+          style={{ backgroundColor: '#4cd964', borderColor: '#4cd964', width: '90%' }}
+        />
+      </View>
 
-        <View style={styles.searchContainer}>
-          <View style={styles.searchInputContainer}>
-            <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search questions and answers..."
-              placeholderTextColor="#999"
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              clearButtonMode="while-editing"
-            />
-            {searchQuery.length > 0 && Platform.OS !== 'ios' && (
-              <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
-                <Ionicons name="close-circle" size={20} color="#999" />
-              </TouchableOpacity>
-            )}
-          </View>
-          {searchQuery.length > 0 && (
-            <Text style={styles.searchResults}>
-              {filteredQuestions.length} of {deck.questions.length} cards
-            </Text>
+      <View style={styles.searchContainer}>
+        <View style={styles.searchInputContainer}>
+          <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search questions and answers..."
+            placeholderTextColor="#999"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            clearButtonMode="while-editing"
+          />
+          {searchQuery.length > 0 && Platform.OS !== 'ios' && (
+            <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
+              <Ionicons name="close-circle" size={20} color="#999" />
+            </TouchableOpacity>
           )}
         </View>
+        {searchQuery.length > 0 && (
+          <Text style={styles.searchResults}>
+            {filteredQuestions.length} of {deck.questions.length} cards
+          </Text>
+        )}
       </View>
 
       <FlatList

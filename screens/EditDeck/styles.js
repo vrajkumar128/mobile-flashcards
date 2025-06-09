@@ -46,20 +46,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  topContainer: {
+  addButtonContainer: {
+    alignItems: 'center',
+    paddingTop: 5,
     borderBottomWidth: 1,
     borderBottomColor: '#eee'
   },
 
-  addButtonContainer: {
-    alignItems: 'center',
-    paddingTop: 15,
-    paddingBottom: 5
-  },
-
   searchContainer: {
     alignItems: 'center',
-    paddingBottom: 15
+    paddingTop: 10,
+    paddingBottom: 5
   },
 
   searchInputContainer: {
@@ -173,7 +170,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 20,
     paddingBottom: 25,
-    paddingHorizontal: 15,
+    paddingHorizontal: 0,
     borderTopWidth: 1,
     borderTopColor: '#eee'
   },
