@@ -46,11 +46,55 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  addButtonContainer: {
-    alignItems: 'center',
-    paddingVertical: 15,
+  topContainer: {
     borderBottomWidth: 1,
     borderBottomColor: '#eee'
+  },
+
+  addButtonContainer: {
+    alignItems: 'center',
+    paddingTop: 15,
+    paddingBottom: 5
+  },
+
+  searchContainer: {
+    alignItems: 'center',
+    paddingBottom: 15
+  },
+
+  searchInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: white,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    height: 45,
+    width: '90%'
+  },
+
+  searchIcon: {
+    marginRight: 8
+  },
+
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    paddingVertical: 8,
+    color: black
+  },
+
+  clearButton: {
+    marginLeft: 8,
+    padding: 2
+  },
+
+  searchResults: {
+    fontSize: 12,
+    color: gray,
+    marginTop: 5,
+    textAlign: 'center'
   },
 
   listContainer: {
