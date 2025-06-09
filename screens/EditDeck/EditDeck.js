@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useLayoutEffect, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, Alert, Platform, BackHandler } from 'react-native';
-import { getDeck, saveQuestionList, updateDeckName } from '../../utils/api';
+import { getDeck, saveQuestionList, updateDeckName, removeDeck } from '../../utils/api';
 import styles from './styles';
 import TextButton from '../../components/TextButton/TextButton';
 import { showAlert } from '../../utils/alertService';
@@ -185,6 +185,27 @@ const EditDeck = ({ route, navigation }) => {
     setSearchQuery('');
   };
 
+  const handleDeleteDeck = () => {
+    showAlert(
+      'Delete Deck',
+      `Are you sure you want to delete the deck "${deck.title}"?`,
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            await removeDeck(deck.title);
+            navigation.navigate('Decks');
+          }
+        }
+      ]
+    );
+  };
+
   if (!deck) {
     return null;
   }
@@ -226,6 +247,7 @@ const EditDeck = ({ route, navigation }) => {
       </View>
 
       <FlatList
+        style={styles.flatList}
         contentContainerStyle={styles.listContainer}
         data={filteredQuestions}
         renderItem={({ item, index }) => (
@@ -260,6 +282,15 @@ const EditDeck = ({ route, navigation }) => {
           </View>
         }
       />
+
+      <View style={styles.deleteDeckContainer}>
+        <TouchableOpacity
+          style={styles.deleteDeckButton}
+          onPress={handleDeleteDeck}
+        >
+          <Text style={styles.deleteDeckButtonText}>Delete Deck</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

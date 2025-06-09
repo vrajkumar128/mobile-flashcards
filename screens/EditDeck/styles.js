@@ -97,6 +97,10 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
 
+  flatList: {
+    flex: 1
+  },
+
   listContainer: {
     width: '100%',
     paddingVertical: 15,
@@ -163,6 +167,32 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     color: gray
+  },
+
+  deleteDeckContainer: {
+    alignItems: 'center',
+    paddingTop: 20,
+    paddingBottom: 25,
+    paddingHorizontal: 15,
+    borderTopWidth: 1,
+    borderTopColor: '#eee'
+  },
+
+  deleteDeckButton: {
+    backgroundColor: '#ff3b30',
+    borderColor: '#ff3b30',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    width: '90%',
+    alignItems: 'center',
+    cursor: 'pointer'
+  },
+
+  deleteDeckButtonText: {
+    fontSize: 18,
+    color: white,
+    fontWeight: 'bold'
   }
 });
 
