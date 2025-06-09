@@ -237,9 +237,13 @@ const EditDeck = ({ route, navigation }) => {
             </TouchableOpacity>
           )}
         </View>
-        {searchQuery.length > 0 && (
+        {searchQuery.length > 0 ? (
           <Text style={styles.searchResults}>
-            {filteredQuestions.length} of {deck.questions.length} cards
+            {filteredQuestions.length} of {deck.questions.length} {deck.questions.length === 1 ? 'card' : 'cards'}
+          </Text>
+        ) : (
+          <Text style={styles.searchResults}>
+            {deck.questions.length} of {deck.questions.length} {deck.questions.length === 1 ? 'card' : 'cards'}
           </Text>
         )}
       </View>
