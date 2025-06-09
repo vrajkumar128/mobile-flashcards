@@ -110,10 +110,15 @@ const EditDeck = ({ route, navigation }) => {
               </View>
             )}
           </View>
+        ),
+        headerRight: () => (
+          <TouchableOpacity onPress={handleDeleteDeck} style={{ marginRight: 15 }}>
+            <Ionicons name="trash" size={24} color="white" />
+          </TouchableOpacity>
         )
       });
     }
-  }, [navigation, deck, isEditingName, editingName, handleEditDeckName]);
+  }, [navigation, deck, isEditingName, editingName, handleEditDeckName, handleDeleteDeck]);
 
   const refreshDeck = useCallback(async () => {
     const deckData = await getDeck(deckId);
@@ -212,40 +217,34 @@ const EditDeck = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.addButtonContainer}>
-        <TextButton
-          text="Add Question"
-          onPress={handleAddQuestion}
-          style={{ backgroundColor: '#4cd964', borderColor: '#4cd964', width: '90%' }}
-        />
-      </View>
-
-      <View style={styles.searchContainer}>
-        <View style={styles.searchInputContainer}>
-          <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search questions and answers..."
-            placeholderTextColor="#999"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            clearButtonMode="while-editing"
-          />
-          {searchQuery.length > 0 && Platform.OS !== 'ios' && (
-            <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
-              <Ionicons name="close-circle" size={20} color="#999" />
-            </TouchableOpacity>
+      <View style={styles.topContainer}>
+        <View style={styles.searchContainer}>
+          <View style={styles.searchInputContainer}>
+            <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search questions and answers..."
+              placeholderTextColor="#999"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              clearButtonMode="while-editing"
+            />
+            {searchQuery.length > 0 && Platform.OS !== 'ios' && (
+              <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
+                <Ionicons name="close-circle" size={20} color="#999" />
+              </TouchableOpacity>
+            )}
+          </View>
+          {searchQuery.length > 0 ? (
+            <Text style={styles.searchResults}>
+              {filteredQuestions.length} of {deck.questions.length} {deck.questions.length === 1 ? 'card' : 'cards'} shown
+            </Text>
+          ) : (
+            <Text style={styles.searchResults}>
+              {deck.questions.length} of {deck.questions.length} {deck.questions.length === 1 ? 'card' : 'cards'} shown
+            </Text>
           )}
         </View>
-        {searchQuery.length > 0 ? (
-          <Text style={styles.searchResults}>
-            {filteredQuestions.length} of {deck.questions.length} {deck.questions.length === 1 ? 'card' : 'cards'}
-          </Text>
-        ) : (
-          <Text style={styles.searchResults}>
-            {deck.questions.length} of {deck.questions.length} {deck.questions.length === 1 ? 'card' : 'cards'}
-          </Text>
-        )}
       </View>
 
       <FlatList
@@ -285,12 +284,12 @@ const EditDeck = ({ route, navigation }) => {
         }
       />
 
-      <View style={styles.deleteDeckContainer}>
+      <View style={styles.addButtonContainer}>
         <TouchableOpacity
-          style={styles.deleteDeckButton}
-          onPress={handleDeleteDeck}
+          style={styles.addQuestionButton}
+          onPress={handleAddQuestion}
         >
-          <Text style={styles.deleteDeckButtonText}>Delete Deck</Text>
+          <Text style={styles.addQuestionButtonText}>Add Question</Text>
         </TouchableOpacity>
       </View>
     </View>

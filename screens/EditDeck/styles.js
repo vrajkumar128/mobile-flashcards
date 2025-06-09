@@ -46,17 +46,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  addButtonContainer: {
-    alignItems: 'center',
-    paddingTop: 5,
+  topContainer: {
     borderBottomWidth: 1,
     borderBottomColor: '#eee'
   },
 
   searchContainer: {
     alignItems: 'center',
-    paddingTop: 10,
-    paddingBottom: 5
+    paddingVertical: 10
   },
 
   searchInputContainer: {
@@ -166,18 +163,19 @@ const styles = StyleSheet.create({
     color: gray
   },
 
-  deleteDeckContainer: {
+  addButtonContainer: {
     alignItems: 'center',
     paddingTop: 20,
     paddingBottom: 25,
     paddingHorizontal: 0,
     borderTopWidth: 1,
-    borderTopColor: '#eee'
+    borderTopColor: '#eee',
+    width: '100%'
   },
 
-  deleteDeckButton: {
-    backgroundColor: '#ff3b30',
-    borderColor: '#ff3b30',
+  addQuestionButton: {
+    backgroundColor: '#4cd964',
+    borderColor: '#4cd964',
     borderWidth: 1,
     borderRadius: 5,
     padding: 10,
@@ -186,10 +184,9 @@ const styles = StyleSheet.create({
     cursor: 'pointer'
   },
 
-  deleteDeckButtonText: {
+  addQuestionButtonText: {
     fontSize: 18,
-    color: white,
-    fontWeight: 'bold'
+    color: white
   }
 });
 
