@@ -59,7 +59,7 @@ const Sidebar = ({ isVisible, onClose, navigation }) => {
                     </View>
 
                     <View style={styles.menuContainer}>
-                        {menuItems.map((item, index) => (
+                        {/* {menuItems.map((item, index) => (
                             <TouchableOpacity
                                 key={index}
                                 style={styles.menuItem}
@@ -68,7 +68,7 @@ const Sidebar = ({ isVisible, onClose, navigation }) => {
                                 <Ionicons name={item.icon} size={24} color="#333" style={styles.menuIcon} />
                                 <Text style={styles.menuText}>{item.title}</Text>
                             </TouchableOpacity>
-                        ))}
+                        ))} */}
                     </View>
                 </Animated.View>
             </View>

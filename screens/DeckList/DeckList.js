@@ -41,7 +41,7 @@ const DeckList = ({ navigation }) => {
   };
 
   const handleGearPress = () => {
-    console.log('Settings pressed');
+    navigation.navigate('Settings');
   };
 
   const handleSidebarClose = () => {
