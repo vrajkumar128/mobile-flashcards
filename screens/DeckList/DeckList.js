@@ -2,6 +2,7 @@ import React, { useState, useCallback, useLayoutEffect } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { getDecks, saveDeckOrder } from '../../utils/api';
 import Deck from '../../components/Deck/Deck';
+import Sidebar from '../../components/Sidebar/Sidebar';
 import styles from './styles';
 import { useFocusEffect } from '@react-navigation/native';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
@@ -11,9 +12,11 @@ const DeckList = ({ navigation }) => {
   const [decksData, setDecksData] = useState(null);
   const [deckArray, setDeckArray] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [sidebarVisible, setSidebarVisible] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      title: 'All Decks',
       headerLeft: () => (
         <TouchableOpacity
           onPress={handleHamburgerPress}
@@ -34,11 +37,15 @@ const DeckList = ({ navigation }) => {
   }, [navigation]);
 
   const handleHamburgerPress = () => {
-    console.log('Hamburger menu pressed');
+    setSidebarVisible(true);
   };
 
   const handleGearPress = () => {
     console.log('Settings pressed');
+  };
+
+  const handleSidebarClose = () => {
+    setSidebarVisible(false);
   };
 
   const refreshDecks = async () => {
@@ -118,6 +125,11 @@ const DeckList = ({ navigation }) => {
   if (!decksData || deckArray.length === 0) {
     return (
       <View style={styles.container}>
+        <Sidebar
+          isVisible={sidebarVisible}
+          onClose={handleSidebarClose}
+          navigation={navigation}
+        />
         <TouchableOpacity
           style={styles.fab}
           onPress={handleAddDeck}
@@ -130,6 +142,11 @@ const DeckList = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Sidebar
+        isVisible={sidebarVisible}
+        onClose={handleSidebarClose}
+        navigation={navigation}
+      />
       <DraggableFlatList
         data={deckArray}
         onDragEnd={handleDragEnd}
