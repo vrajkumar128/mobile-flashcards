@@ -1,16 +1,45 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useLayoutEffect } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { getDecks, saveDeckOrder } from '../../utils/api';
 import Deck from '../../components/Deck/Deck';
 import styles from './styles';
 import { useFocusEffect } from '@react-navigation/native';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import DraggableFlatList, { ScaleDecorator } from '../../components/DraggableFlatList';
 
 const DeckList = ({ navigation }) => {
   const [decksData, setDecksData] = useState(null);
   const [deckArray, setDeckArray] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={handleHamburgerPress}
+          style={{ marginLeft: 15, padding: 5 }}
+        >
+          <Ionicons name="menu" size={24} color="white" />
+        </TouchableOpacity>
+      ),
+      headerRight: () => (
+        <TouchableOpacity
+          onPress={handleGearPress}
+          style={{ marginRight: 15, padding: 5 }}
+        >
+          <Ionicons name="settings" size={24} color="white" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
+  const handleHamburgerPress = () => {
+    console.log('Hamburger menu pressed');
+  };
+
+  const handleGearPress = () => {
+    console.log('Settings pressed');
+  };
 
   const refreshDecks = async () => {
     const result = await getDecks();
@@ -34,19 +63,15 @@ const DeckList = ({ navigation }) => {
   );
 
   const handleDragEnd = async ({ data, from, to }) => {
-    // Only update if the order actually changed
     if (from !== to) {
       console.log(`Moved deck from position ${from} to position ${to}`);
 
-      // Update the local state with the new order
       setDeckArray(data);
 
-      // Save the new order to storage
       const newOrder = data.map(deck => deck.title);
       await saveDeckOrder(newOrder);
     }
 
-    // Reset dragging state after a short delay to ensure gesture is complete
     setTimeout(() => {
       setIsDragging(false);
     }, 100);
@@ -58,7 +83,6 @@ const DeckList = ({ navigation }) => {
   };
 
   const handlePress = (deck) => {
-    // Only navigate if we're not currently dragging
     if (!isDragging) {
       navigation.navigate('DeckDetail', { deck, deckId: deck.title });
     }
