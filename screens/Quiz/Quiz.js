@@ -1,8 +1,15 @@
 import React, { useState, useLayoutEffect, useEffect } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  interpolate,
+  runOnJS
+} from 'react-native-reanimated';
+import { Ionicons } from '@expo/vector-icons';
 import styles from './styles';
-import TextButton from '../../components/TextButton/TextButton';
-import { getDeck } from '../../utils/api'; // Import getDeck function
+import { getDeck } from '../../utils/api';
 
 const Quiz = ({ route, navigation }) => {
   const [showAns, setShowAns] = useState(false);
@@ -15,23 +22,17 @@ const Quiz = ({ route, navigation }) => {
   const { deck } = route.params;
   const deckId = deck.title;
 
-  // Fisher-Yates shuffle for randomizing question order
+  const flipRotation = useSharedValue(0);
+
   const fisherYatesShuffle = (array) => {
-    const shuffled = [...array]; // Create a copy of the array
-
-    // Start from the last element and swap with a random element before it (including itself)
+    const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
-      // Generate random index between 0 and i (inclusive)
       const j = Math.floor(Math.random() * (i + 1));
-
-      // Swap elements at indices i and j
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-
     return shuffled;
   };
 
-  // Fetch the latest deck data when component mounts
   useEffect(() => {
     const fetchLatestDeck = async () => {
       if (route.params.randomizedQuestions && route.params.randomizedQuestions.length > 0) {
@@ -41,7 +42,6 @@ const Quiz = ({ route, navigation }) => {
         setNumCorrect(route.params.numCorrect || 0);
         setMissedQuestions(route.params.missedQuestions || []);
 
-        // Check if this is the last question
         if ((route.params.questionIndex || 0) + 1 === route.params.randomizedQuestions.length) {
           setIsLastQuestion(true);
         } else {
@@ -51,11 +51,9 @@ const Quiz = ({ route, navigation }) => {
         return;
       }
 
-      // Normal quiz initialization
       const latestDeck = await getDeck(deckId);
       setCurrentDeck(latestDeck);
 
-      // Initialize with the latest deck's questions
       if (latestDeck) {
         const initialQuestionIndex = route.params.questionIndex || 0;
         const initialNumCorrect = route.params.numCorrect || 0;
@@ -66,17 +64,13 @@ const Quiz = ({ route, navigation }) => {
         setNumCorrect(initialNumCorrect);
         setMissedQuestions(initialMissedQuestions);
 
-        // Get randomized questions from route params or create a new shuffled array
         if (initialQuestionIndex === 0 && !route.params.randomizedQuestions) {
-          // First time starting the quiz - randomize questions
           const shuffledQuestions = fisherYatesShuffle(latestDeck.questions);
           setRandomizedQuestions(shuffledQuestions);
         } else if (route.params.randomizedQuestions) {
-          // Coming from a previous question - use the same shuffled order
           setRandomizedQuestions(route.params.randomizedQuestions);
         }
 
-        // Check if this is the last question
         if (initialQuestionIndex + 1 === latestDeck.questions.length) {
           setIsLastQuestion(true);
         } else {
@@ -88,7 +82,11 @@ const Quiz = ({ route, navigation }) => {
     fetchLatestDeck();
   }, [deckId, route.params]);
 
-  // Set screen header
+  useEffect(() => {
+    flipRotation.value = 0;
+    setShowAns(false);
+  }, [questionIndex]);
+
   useLayoutEffect(() => {
     if (currentDeck && randomizedQuestions.length > 0) {
       navigation.setOptions({
@@ -97,31 +95,48 @@ const Quiz = ({ route, navigation }) => {
     }
   }, [navigation, currentDeck, questionIndex, randomizedQuestions.length]);
 
-  // Display the question or answer depending on state
-  const questionOrAnswer = () => {
-    if (randomizedQuestions.length === 0) return '';
+  const handleCardFlip = () => {
+    const newShowAns = !showAns;
 
-    return showAns
-      ? randomizedQuestions[questionIndex].answer
-      : randomizedQuestions[questionIndex].question;
+    flipRotation.value = withTiming(newShowAns ? 180 : 0, { duration: 600 }, () => {
+      runOnJS(setShowAns)(newShowAns);
+    });
   };
 
-  // Toggle between showing question and answer
-  const showAnswer = () => {
-    setShowAns(prevState => !prevState);
+  const getDynamicFontSize = (text) => {
+    return 36;
   };
 
-  // Navigate to the next question or to the score screen
+  const frontAnimatedStyle = useAnimatedStyle(() => {
+    const rotateValue = interpolate(flipRotation.value, [0, 180], [0, 180]);
+    const opacity = interpolate(flipRotation.value, [0, 90, 180], [1, 0, 0]);
+
+    return {
+      transform: [{ rotateY: `${rotateValue}deg` }],
+      opacity,
+      backfaceVisibility: 'hidden'
+    };
+  });
+
+  const backAnimatedStyle = useAnimatedStyle(() => {
+    const rotateValue = interpolate(flipRotation.value, [0, 180], [180, 360]);
+    const opacity = interpolate(flipRotation.value, [0, 90, 180], [0, 0, 1]);
+
+    return {
+      transform: [{ rotateY: `${rotateValue}deg` }],
+      opacity,
+      backfaceVisibility: 'hidden'
+    };
+  });
+
   const nextQuestion = (additionalCorrect = 0) => {
     const updatedCorrect = numCorrect + additionalCorrect;
 
-    // If the answer was incorrect, add this question to missedQuestions
     const updatedMissedQuestions = [...missedQuestions];
     if (additionalCorrect === 0) {
       updatedMissedQuestions.push(randomizedQuestions[questionIndex]);
     }
 
-    // Determine whether to go to the next question or to the score screen
     if (questionIndex + 1 === randomizedQuestions.length) {
       navigation.navigate('Score', {
         deck: currentDeck,
@@ -139,7 +154,6 @@ const Quiz = ({ route, navigation }) => {
     }
   };
 
-  // If the user's answer was correct, increment score and go to next question
   const isCorrect = () => {
     nextQuestion(1);
   };
@@ -148,23 +162,54 @@ const Quiz = ({ route, navigation }) => {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.subcontainer}>
-            <Text style={styles.heading}>{questionOrAnswer()}</Text>
-            <Text style={styles.caption} onPress={showAnswer}>
-              {showAns ? "Show Question" : "Show Answer"}
-            </Text>
+          <View style={styles.cardContainer}>
+            <TouchableOpacity
+              style={styles.cardTouchable}
+              onPress={handleCardFlip}
+              activeOpacity={0.8}
+            >
+              <View style={styles.card}>
+                <Animated.View style={[styles.cardFace, styles.cardFront, frontAnimatedStyle]}>
+                  <ScrollView style={styles.cardTextContainer} contentContainerStyle={styles.cardTextContent}>
+                    <Text style={[
+                      styles.cardText,
+                      { fontSize: randomizedQuestions[questionIndex] ? getDynamicFontSize(randomizedQuestions[questionIndex].question) : 22 }
+                    ]}>
+                      {randomizedQuestions[questionIndex]?.question}
+                    </Text>
+                  </ScrollView>
+                  <Text style={styles.tapHint}>Tap to reveal answer</Text>
+                </Animated.View>
+
+                <Animated.View style={[styles.cardFace, styles.cardBack, backAnimatedStyle]}>
+                  <ScrollView style={styles.cardTextContainer} contentContainerStyle={styles.cardTextContent}>
+                    <Text style={[
+                      styles.cardText,
+                      { fontSize: randomizedQuestions[questionIndex] ? getDynamicFontSize(randomizedQuestions[questionIndex].answer) : 22 }
+                    ]}>
+                      {randomizedQuestions[questionIndex]?.answer}
+                    </Text>
+                  </ScrollView>
+                  <Text style={styles.tapHint}>Tap to show question</Text>
+                </Animated.View>
+              </View>
+            </TouchableOpacity>
           </View>
-          <View style={styles.subcontainer}>
-            <TextButton
-              text="Correct"
-              onPress={isCorrect}
-              style={styles.correctButton}
-            />
-            <TextButton
-              text="Incorrect"
+
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={[styles.iconButton, styles.incorrectButton]}
               onPress={() => nextQuestion(0)}
-              style={styles.incorrectButton}
-            />
+            >
+              <Ionicons name="close" size={40} color="white" style={{ fontWeight: 'bold' }} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.iconButton, styles.correctButton]}
+              onPress={isCorrect}
+            >
+              <Ionicons name="checkmark" size={40} color="white" style={{ fontWeight: 'bold' }} />
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </View>
